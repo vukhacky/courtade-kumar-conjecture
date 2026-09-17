@@ -1,6 +1,6 @@
 # Dictators are the most informative Boolean functions
 
-Khac Ky Vu and Tuan Tran · 16 September 2026
+Vu Khac Ky and Tuan Tran · 16 September 2026
 
 This paper proves the exact Courtade–Kumar theorem. Its introduction states the stability theorem and cites the companion paper for that proof. No stability estimate is used in the exact proof.
 

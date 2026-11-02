@@ -1,0 +1,5193 @@
+
+\documentclass[11pt,letterpaper]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[letterpaper,margin=1in,includefoot,footskip=18pt]{geometry}
+\usepackage{setspace}
+\setstretch{1}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,enumitem}
+\usepackage[numbers]{natbib}
+\usepackage{xurl}
+\usepackage[unicode,hidelinks]{hyperref}
+\hypersetup{pdftitle={Dictators are most informative},
+            pdfauthor={Vu Khac Ky and Tuan Tran}}
+\renewcommand{\bibliofont}{\normalsize}
+\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}
+\newcommand{\PP}{\mathbf P}
+\newcommand{\1}{\mathbf 1}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Ent}{Ent}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\atanh}{atanh}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\numberwithin{equation}{section}
+\allowdisplaybreaks[2]
+\setlength{\emergencystretch}{1.5em}
+\setlist{itemsep=3pt,topsep=5pt}
+
+\begin{document}
+\flushbottom
+\pagestyle{plain}
+\begin{titlepage}
+\centering
+\vspace*{12mm}
+{\LARGE\bfseries Dictators are most informative\par}
+\vspace{12mm}
+{\large Vu Khac Ky\par}
+\vspace{2mm}
+Department of Mathematics, FPT University\\
+Hanoi, Vietnam\\
+\href{mailto:kyvk2@fpt.edu.vn}{\texttt{kyvk2@fpt.edu.vn}}
+\vspace{7mm}
+
+{\large Tuan Tran\par}
+\vspace{2mm}
+School of Mathematical Sciences\\
+University of Science and Technology of China\\
+Anhui, China\\
+\href{mailto:trantuan@ustc.edu.cn}{\texttt{trantuan@ustc.edu.cn}}
+\vspace{12mm}
+
+\begin{minipage}{\textwidth}
+\noindent\textbf{Abstract.} We prove the Courtade--Kumar conjecture: among all Boolean functions
+$f\colon \{-1,1\}^n\to\{-1,1\}$, a dictator retains the most
+information about a uniformly random input observed through
+independent binary noise. The proof combines local entropy
+inequalities, bounds on entropy production for individual
+coordinates, and Fourier estimates.
+Near the noiseless endpoint, an arcsine transform and spectral
+estimates control the energy lost under projection onto selected
+coordinates, yielding a differential comparison for the
+information gap.
+Explicit scalar inequalities on bounded parameter ranges are
+verified by rigorous interval arithmetic, while the range
+closest to zero noise is handled analytically.
+\end{minipage}
+\vfill
+\begin{minipage}{\textwidth}
+Tuan Tran was supported by the General Program of the National Natural Science Foundation of China under Grant No. 12671420.
+\end{minipage}
+\end{titlepage}
+\setcounter{page}{1}
+
+\section{Introduction}\label{sec:introduction}
+
+How much information about a noisy vector can be retained in one bit?
+Let $X$ be uniform on $\{-1,1\}^n$ and, for $0\le\rho\le1$, obtain
+$Y_\rho$ from $X$ by independently flipping each coordinate $X_i$ with probability
+$(1-\rho)/2$, so that larger $\rho$ means less noise. A one-bit
+summary of $X$ has the form $f(X)$ for a Boolean function
+$f:\{-1,1\}^n\to\{-1,1\}$, and we seek a summary that shares as
+much information as possible with $Y_\rho$. Courtade and Kumar
+\cite{CourtadeKumar2014} relate this question to the information
+bottleneck problem, where a compressed description should retain
+information about a correlated observation, and to the value of one
+bit of side information.
+
+For finite random variables $U,V$, the mutual information
+$I(U;V)=H(U)-H(U\mid V)$ is the average reduction in Shannon
+entropy obtained by observing $V$. We use natural logarithms and
+$0\log0=0$. Our objective is to maximize $I(f(X);Y_\rho)$
+over all Boolean functions $f$.
+
+Kumar and Courtade conjectured in 2013 \cite{KumarCourtade2013}
+that a single input coordinate is optimal, and studied the conjecture
+further in \cite{CourtadeKumar2014}. Such a summary, allowing a change
+of sign, is a \emph{signed dictator}: $f(x)=\sigma x_i$, where
+$1\le i\le n$ and $\sigma\in\{-1,1\}$, with random output $\sigma X_i$.
+To express its information value, write
+$H_{\rm b}(p)=-p\log p-(1-p)\log(1-p)$ for binary entropy, and set
+\begin{equation}\label{eq:entropy-functions}
+ H(t)=H_{\rm b}((1-t)/2),\qquad \Phi(t)=\log2-H(t).
+\end{equation}
+Here $H(t)$ is the entropy of a sign-valued variable with mean $t$.
+The scalar functions $H_{\rm b}:[0,1]\to[0,\log2]$ and
+$H,\Phi:[-1,1]\to[0,\log2]$ are continuous at their endpoints.
+A Boolean function is
+called \emph{balanced} when $\E f=0$. Every signed dictator is
+balanced, with entropy $\log2$, and its conditional entropy given
+$Y_\rho$ is $H(\rho)$. Its mutual information is therefore
+$\Phi(\rho)$, which gives the conjectured upper bound for every Boolean summary.
+
+
+
+We prove the Courtade--Kumar conjecture in full generality.
+
+\begin{theorem}\label{jp:main}
+For every $n\ge1$, every $f:\{-1,1\}^n\to\{-1,1\}$, and every
+$\rho\in[0,1]$,
+\[
+ I(f(X);Y_\rho)\le\log2-H_{\rm b}((1-\rho)/2).
+\]
+Equality is attained by every signed dictator.
+\end{theorem}
+
+Theorem~\ref{jp:main} admits a dimension-independent stability version:
+for each fixed $0<\rho<1$, if $I(f(X);Y_\rho)$ is close to $\Phi(\rho)$,
+then $f$ is close in probability to a signed dictator.
+See the companion paper \cite[Theorem~1.1]{VuTranStability}
+for a quantitative statement and proof.
+
+The proof combines local entropy comparisons with inequalities that
+retain the contributions of individual coordinates and the Fourier
+energy outside them. Its main difficulty is uniformity near $\rho=1$:
+there every balanced function has the same information $\log2$.
+For example, parity on $k\ge2$ coordinates has information
+$\Phi(\rho^k)$, which approaches the dictator value as $\rho\to1$,
+although parity remains at probability distance $1/2$ from every
+signed dictator. A dimension-independent proof must therefore determine
+the sign of a vanishing gap even far from dictators.
+
+\medskip
+\noindent\textbf{Independent work.}
+While preparing the present manuscript, we learned that Zijie Chen,
+Amin Gohari, Adel Javanmard, Honghao Lin, Vahab Mirrokni, Chandra Nair,
+and David P. Woodruff \cite{CGJLMNW2026} had independently obtained a
+proof of the Courtade--Kumar conjecture. Their proof develops the
+differential-equation approach through an unrestricted Bellman
+inequality for edge variables with mean and entropy constraints.
+Our proof uses coordinate profiles and spectral estimates to control
+entropy production. We thank them for their collegiality in coordinating
+the simultaneous posting of the two manuscripts on arXiv.
+
+After the first version of our paper appeared on arXiv, further proofs were presented by Mahdavifar and Beirami \cite{MahdavifarBeirami2026}, Kramer and Saglam
+\cite{KramerSaglam2026}, and in manuscripts released by OpenAI \cite{OpenAI2026Information,OpenAI2026Hellinger}.
+
+\subsection{Previous work}
+The problem became a meeting point of information theory and Boolean
+analysis. Kindler, O'Donnell and Witmer
+\cite{KindlerODonnellWitmer2015} record the attention it attracted,
+while Yu and Tan's 2022 monograph calls it “one of the most important
+open problems in information theory” \cite[Section~9.1.2]{YuTan2022}.
+The latter places it alongside noise stability, noninteractive
+correlation distillation, and hypercontractivity.
+
+The conjecture has led to sustained work on several related extremal
+problems. Anantharam, Gohari, Kamath and Nair
+\cite{AnantharamGohariKamathNair2013} used hypercontractivity to study
+the weaker problem in which both vectors are reduced to Boolean
+outputs; Pichler, Piantanida and Matz \cite{PichlerPiantanidaMatz2018}
+later proved this two-output inequality. Kindler, O'Donnell and Witmer \cite{KindlerODonnellWitmer2015}
+examined fixed-mean and continuous formulations, while Ordentlich,
+Shayevitz and Weinstein \cite{Ordentlich2016} improved the general
+upper bound by Fourier analysis. Samorodnitsky
+\cite{Samorodnitsky2016} established CK for
+$0\le\rho\le\rho_0$, with an absolute constant $\rho_0>0$. Yu \cite{Yu2023,Yu2026Local}
+subsequently strengthened this result in the balanced case
+to the explicit range $0\le\rho\le0.914$, while also obtaining
+further bounds for arbitrary means.
+
+A second line of work seeks a stronger functional inequality from
+which CK would follow. Anantharam, Bogdanov, Chakrabarti, Jayram and
+Nair \cite{AnantharamEtAl2017} proposed a Hellinger-entropy strengthening
+and proved that it implies CK. Chen and Nair \cite{ChenNair2024}
+placed these conjectures in an ordered family of $\Phi$-entropy
+inequalities and related their small-noise limits to isoperimetry.
+Their introduction also records extensive work on the problem at a
+Simons workshop in 2015. Chen, Gohari and Nair
+\cite{ChenGohariNair2025} then developed a differential-equation
+approach and reduced a sufficient condition for balanced CK to
+four explicit inequalities. This program connects the conjecture
+to both functional inequalities and the evolution of entropy under
+noise. 
+
+Li and M\'edard \cite{LiMedard2021} studied noisy moments and
+noninteractive correlation distillation. Barnes and \"Ozg\"ur
+\cite{BarnesOzgur2020} proved an equivalence between balanced CK and
+a symmetrized Li--M\'edard conjecture. More recent work includes
+the coordinate-wise information bound of Javanmard and Woodruff
+\cite{JavanmardWoodruff2026}; its objective differs from information
+about the full noisy vector.
+
+
+\subsection{The proof mechanism}
+
+The first step is to reduce the problem to increasing Boolean
+functions. For such functions, the singleton Fourier coefficient
+$\widehat f(i)=\operatorname{Inf}_i(f)\ge0$ measures dependence on
+coordinate $i$, allowing us to keep track of individual coordinates
+in the entropy and spectral estimates below. Coordinate compression
+justifies this reduction: it preserves $\E f$ and does not decrease
+$I(f(X);Y_\rho)$ for any $\rho$. Since the compression is independent
+of $\rho$, we may keep the same increasing function fixed as $\rho$
+varies. The proof then divides into two correlation ranges.
+
+\begin{enumerate}[label=\textup{(\arabic*)},leftmargin=*]
+\item \textbf{Low and intermediate correlations.}
+At low correlations, information contraction handles functions with
+large $|\E f|$, a local entropy bound handles a large singleton
+coefficient, and a quadratic Fourier-energy bound covers the
+remaining functions. At intermediate correlations, we divide the
+remaining functions according to their first-level weight
+$W_1(f)=\sum_i\widehat f(i)^2$. A cubic energy bound applies when
+$W_1(f)$ is small. When it is large, an edge inequality retains the
+contribution of each coordinate to entropy production. Integrating
+this bound from $\rho=1$, where conditional entropy is zero, gives the conditional-entropy bound we call the
+profile clock.
+
+\item \textbf{Correlations near $1$.}
+Every balanced Boolean function has information tending to $\log2$
+as $\rho\to1$, so the gap from a dictator vanishes even for functions
+far from dictators. We therefore use the signed gap
+$G_f(\rho)=I(f(X);Y_\rho)-\Phi(\rho)$ and the identity
+\[
+ \rho G_f'(\rho)=D(T_\rho f)-\rho\atanh\rho.
+\]
+The local entropy bound proves $G_f(\rho)\le0$ when one singleton
+coefficient is close to $1$. For the remaining functions, the
+arcsine transform and a coordinate projection give a spectral lower
+bound on $D(T_\rho f)$ that also accounts for the energy outside the
+projection. At any hypothetical positive gap, this bound gives
+$D(T_\rho f)>\rho\atanh\rho$, and hence $G_f'(\rho)>0$.
+A positive gap cannot keep increasing toward $\rho=1$, since
+$G_f(1)=-\Phi(\E f)\le0$.
+\end{enumerate}
+
+The two parts cover $[0,1]$. Explicit scalar comparisons on compact
+ranges are verified by outward-rounded interval arithmetic; the
+range closest to $1$ is handled analytically. We now give the quantities and inequalities
+behind these comparisons.
+
+For a fixed nonconstant Boolean function $f:\{-1,1\}^n\to\{-1,1\}$
+with mean $\mu=\E f$, put
+\begin{equation}\label{eq:information-entropy}
+ A_\rho(f)=I(f(X);Y_\rho),\qquad
+ E_\rho(f)=H(\mu)-A_\rho(f)=\E H(T_\rho f),
+\end{equation}
+For $\rho\in[0,1]$, the noise operator $T_\rho$ sends real-valued
+functions on $\{-1,1\}^n$ to real-valued functions on the same cube
+by averaging over independent coordinate flips. For fixed
+$y\in\{-1,1\}^n$, obtain $Z\in\{-1,1\}^n$ by independently
+flipping each coordinate of $y$ with probability $(1-\rho)/2$.
+For our Boolean function, $T_\rho f:\{-1,1\}^n\to[-1,1]$ satisfies
+\[
+ (T_\rho f)(y)=\E[f(Z)]=\E[f(X)\mid Y_\rho=y].
+\]
+The second equality uses the uniformity of $X$ and the symmetry of
+the noise channel. Section~\ref{sec:noise} gives the kernel and Fourier
+representations. Since $f$ is nonconstant, $T_\rho f$ takes values in
+$(-1,1)$ when $\rho<1$. For fixed $f$, both $\rho\mapsto A_\rho(f)$
+and $\rho\mapsto E_\rho(f)$ map $[0,1]$ into $[0,H(\mu)]$.
+Constant functions have zero information and need no further argument.
+The signed information gap $G_f:[0,1]\to\R$ is
+\begin{equation}\label{ub:gap-definitions}
+ G_f(\rho)=A_\rho(f)-\Phi(\rho)
+          =H(\rho)-E_\rho(f)-\Phi(\mu).
+\end{equation}
+Thus the goal is $G_f\le0$. The term $\Phi(\mu)$ records the smaller
+initial entropy of an unbalanced bit; we retain it throughout.
+Two of the comparisons just outlined take the following form:
+\[
+ \begin{array}{ll}
+ \text{integrated entropy:}&
+ E_\rho(f)\ge H(\rho)\quad\Longrightarrow\quad G_f(\rho)\le0,\\
+ \text{near the endpoint:}&
+ G_f(\rho)>0\quad\Longrightarrow\quad G_f'(\rho)>0.
+ \end{array}
+\]
+The second implication is established throughout a terminal interval
+and used with $G_f(1)=-\Phi(\mu)\le0$.
+Coordinate compression preserves the mean and does not decrease
+$A_\rho$ for any $\rho\in[0,1]$;
+see Lemma~\ref{lem:compression}.
+Since the compression is independent of $\rho$, we may assume
+that $f$ is increasing and keep it fixed as $\rho$ varies.
+For such a function the singleton Fourier coefficient
+$\widehat f(i)=\E[f(X)X_i]\in[0,1]$ equals the influence of coordinate $i$.
+
+Let $\mathcal Lh(x)=\frac12\sum_i[h(x)-h(x^{\oplus i})]$ be the cube
+Laplacian. It maps $h:\{-1,1\}^n\to\R$ to
+$\mathcal Lh:\{-1,1\}^n\to\R$, where $x^{\oplus i}$ flips coordinate $i$.
+For $h:\{-1,1\}^n\to(-1,1)$, define its entropy production and
+quadratic energy by
+\[
+ D(h)=\E[(\mathcal Lh)\atanh h],\qquad
+ \operatorname{Dir}(h)=\E[h\mathcal Lh].
+\]
+Here $\atanh(t)=\frac{1}{2}\log \frac{1+t}{1-t}$ for $-1<t<1$.
+Both quantities are nonnegative; the quadratic energy is also defined
+for arbitrary real-valued $h$. For $0<\rho<1$, differentiating the
+conditional entropy gives
+\begin{equation}\label{intro:gap-slope}
+ -\rho E'_\rho(f)=D(T_\rho f),\qquad
+ \rho G_f'(\rho)=D(T_\rho f)-\rho\atanh\rho.
+\end{equation}
+The first identity drives the profile-clock comparison, while the
+second turns a lower bound for entropy production into the endpoint
+comparison above.
+
+\medskip
+\noindent\textbf{An edge profile that survives averaging.}
+Fix all coordinates except one, and write $a,b\in(-1,1)$ for
+the two values of $T_\rho f$ on the resulting cube edge. Its average
+conditional entropy is $[H(a)+H(b)]/2$. The coordinate Laplacian
+takes values $(a-b)/2$ and $(b-a)/2$, so averaging its product with
+$\atanh(T_\rho f)$ gives the edge production
+\[
+ \frac{(a-b)(\atanh a-\atanh b)}4.
+\]
+For symmetric values $a=-t,b=t$, where $0<t<1$, these expressions
+reduce to $H(t)$ and $t\atanh t$, respectively, and the half-difference
+has magnitude $t$. Writing $v=\atanh t$ motivates the entropy-to-size
+ratio $F$ and the production profile $B_e$ below.
+Define $F:(0,\infty)\to(0,\infty)$ and, for each $e>0$,
+$B_e:[0,\infty)\to[0,\infty)$ by
+\[
+ F(v)=\frac{H(\tanh v)}{\tanh v},\qquad
+ B_e(q)=qF^{-1}(e/q)\quad(e,q>0),\qquad B_e(0)=0.
+\]
+The function $F$ is a strictly decreasing bijection, so its inverse
+$F^{-1}:(0,\infty)\to(0,\infty)$ is well defined.
+The edge comparison of Chen, Gohari and Nair
+\cite[Lemma~10]{ChenGohariNair2025}, in our normalization, says that
+any edge with average entropy $e$ and half-difference $d$ has production
+at least $B_e(|d|)$. Their joint-convexity result
+\cite[Lemma~13]{ChenGohariNair2025} allows us to average this comparison and
+obtain Proposition~\ref{prop:profile-production}:
+\begin{equation}\label{intro:production}
+ D(T_\rho f)\ge\sum_i B_{E_\rho(f)}(\rho \widehat f(i)).
+\end{equation}
+Unlike a bound using only total influence, this inequality retains
+the individual coordinate contributions.
+
+In noise time $\tau=-\log\rho>0$, set $y=E_\rho(f)/\rho>0$ and
+define $P_f:(0,\infty)\to[0,\infty)$ by
+$P_f(y)=\sum_{i=1}^n B_y(\widehat f(i))$. Scaling in \eqref{intro:production} gives
+$dy/d\tau\ge y+P_f(y)$.
+Since $f$ is increasing and nonconstant, at least one singleton
+coefficient is positive. Thus $P_f(y)\ge P_f(1)>0$ for
+$0<y\le1$, so the integral below is finite at zero.
+Booleanity gives $y\to0$ as $\tau\downarrow0$, and integration yields
+\begin{equation}\label{intro:clock}
+ \int_0^{E_\rho(f)/\rho}\frac{dy}{y+P_f(y)}\ge-\log\rho.
+\end{equation}
+For a dictator this is equality with $P_f(y)=B_y(1)$.
+Consequently, if a lower envelope $Q:(0,\infty)\to[0,\infty)$
+satisfies $Q\le P_f$ pointwise and
+\[
+ \int_0^{H(\rho)/\rho}\frac{dy}{y+Q(y)}\le-\log\rho,
+\]
+then $E_\rho(f)\ge H(\rho)$, which proves CK for that function.
+Section~\ref{sec:profile-clocks} develops this integral comparison,
+called a profile clock.
+
+To obtain such a function $Q$, we bound the sum defining $P_f$ using
+only a few Fourier parameters. Relabel the coordinates so that the singleton Fourier coefficients satisfy $\widehat f(1) 
+\ge \cdots \ge \widehat f(n)$. We retain the contribution $B_y(\widehat f(1))$.
+For the remaining coefficients, choose $m\ge0$ and $0<c\le1$
+such that
+\[
+ \sum_{i=2}^n\widehat f(i)^2\ge m,
+ \qquad
+\widehat f(i)\le c\qquad(2\le i\le n).
+\]
+Since $s\mapsto B_y(\sqrt{s})$ is increasing and concave,
+among numbers in $[0,c^2]$ with total at least $m$, the sum of
+their $B_y(\sqrt{\cdot})$-values is minimized when the total
+equals $m$ and is concentrated into as many entries equal to
+$c^2$ as possible, with at most one smaller nonzero entry;
+see Lemma~\ref{jp:profile}.
+Writing $m=kc^2+r$, where $k\in\mathbb Z_{\ge0}$ and
+$0\le r<c^2$, we therefore obtain
+\[
+ P_f(y)\ge
+ B_y(\widehat f(1))+kB_y(c)+B_y(\sqrt r)=:Q(y).
+\]
+Thus $Q$ depends only on $\widehat f(1)$, $m$, and $c$.
+
+The parameters defining $Q$ stay fixed as $\rho$ varies.
+For $Q$ of the form above,
+Theorem~\ref{thm:clock-propagation} shows that if
+\[
+ \int_0^{H(\rho_0)/\rho_0}\frac{dy}{y+Q(y)}
+ \le -\log\rho_0
+\]
+for some $\rho_0\in(0,1)$, then the same inequality holds
+with $\rho_0$ replaced by any $\rho\in[\rho_0,1)$.
+Consequently, checking this inequality at $\rho_0$ proves
+$E_\rho(f)\ge H(\rho)$ throughout that interval.
+
+\medskip
+\noindent\textbf{Keeping the energy lost by a projection.}
+Near $\rho=1$, we use a stronger edge comparison. The pointwise transform
+$h=\arcsin(T_\rho f):\{-1,1\}^n\to(-\pi/2,\pi/2)$ reflects entropy curvature, since
+$(\arcsin)'=\sqrt{\Phi''}$. Edgewise Cauchy--Schwarz gives
+$D(T_\rho f)\ge\operatorname{Dir}(h)$, but discarding the difference
+loses information needed for the endpoint comparison.
+Define $R:[0,\infty)\to[0,\infty)$ by $R(0)=0$ and, for $v>0$,
+\[
+ R(v)=v-\frac{\arcsin^2(\tanh v)}{\tanh v},\qquad
+ u=\atanh\rho,\qquad \ell_i=F^{-1}(F(u)/\widehat f(i))
+\]
+where $\ell_i$ is defined by the displayed formula when $\widehat f(i)>0$
+and is zero otherwise. Thus each $\ell_i\ge0$. At a hypothetical positive
+gap, $E_\rho(f)<H(\rho)$, and
+Proposition~\ref{fh:simultaneous-refund} gives, for every $K\subseteq[n]$,
+\begin{equation}\label{intro:arcsine}
+ D(T_\rho f)\ge\operatorname{Dir}(h)+\rho\sum_{i\in K}\widehat f(i)R(\ell_i),
+ \qquad \sum_i \widehat f(i)\ell_i\le D(T_\rho f)/\rho.
+\end{equation}
+The same production therefore controls all coordinate contributions
+simultaneously.
+
+Choose $0<z<u$ and retain
+$K=\{i:\ell_i\ge z\}$. The projection
+$P_Kh:\{-1,1\}^n\to\R$ is defined by
+$(P_Kh)(x)=\E[h(X)\mid X_K=x_K]$ and depends only on $x_K$.
+The crucial estimate for the discarded part is
+Lemma~\ref{as:strengthened-split}:
+\begin{equation}\label{intro:martingale}
+ \operatorname{Dir}(h-P_Kh)
+ \ge V+\frac V2\log\frac V{b_K},\qquad
+ V=\|h-P_Kh\|_2^2,\quad
+ b_K=\sum_{i\notin K}(\E|\partial_i h|)^2,
+\end{equation}
+when $V,b_K>0$, where
+$\partial_i h:\{-1,1\}^{[n]\setminus\{i\}}\to\R$
+is the half-difference on an $i$-edge. We obtain this estimate by applying the martingale entropy
+argument of Falik and Samorodnitsky
+\cite[Theorem~2.2 and Lemma~2.3]{FalikSamorodnitsky2007}
+to the increments outside $K$.
+Its affine form, valid also when $V=0$, is
+\[
+ \operatorname{Dir}(h-P_Kh)
+ \ge tV-\frac12e^{2t-3}b_K \qquad \text{for } t\ge2.
+\]
+Noise and $\arcsin$ preserve monotonicity, so $h$ is increasing
+and $b_K=\sum_{i\notin K}\widehat h(i)^2$.
+Together with
+$\operatorname{Dir}(h)=\operatorname{Dir}(P_Kh)
++\operatorname{Dir}(h-P_Kh)$, this gives a quadratic form
+whose Fourier weights distinguish modes supported in $K$
+from those involving coordinates outside $K$.
+
+To transfer this quadratic form from $h$ to $T_\rho f$,
+we use Lemma~\ref{fh:arcsine-error}:
+\[
+ \left\|h-\frac{\pi}{2}T_\rho f\right\|_2^2
+ \le C_*\mathcal J,\qquad
+ \mathcal J=
+ \E\!\left[H(T_\rho f)
+       -\bigl(1-(T_\rho f)^2\bigr)\log2\right],
+\]
+where $C_*$ is an absolute constant.
+Lemma~\ref{fh:square-completion} then gives a lower bound
+containing $\Lambda\Var(T_\rho f)-\Gamma\mathcal J$,
+with $\Lambda,\Gamma>0$, together with corrections for the
+retained and discarded coordinates.
+The retained Fourier corrections are controlled by
+\[
+ \Var(P_Kf)\le\sum_{i\in K}\psi(\widehat f(i)),
+\]
+where $\psi:[0,1]\to[0,\infty)$ is the explicit function in
+\eqref{eq:influence-cost}; see Theorem~\ref{rt:source-projection}.
+
+At a positive gap, Lemma~\ref{ub:transfer} gives
+\[
+ \Lambda\Var(T_\rho f)-\Gamma\mathcal J
+ \ge
+ \Lambda\rho^2-\Gamma
+       \bigl[H(\rho)-(1-\rho^2)\log2\bigr]
+ =:N_\rho,
+\]
+provided
+\[
+ \Gamma\bigl[\tfrac12-(1-\rho^2)\log2\bigr]
+ \ge\Lambda\rho^2.
+\]
+This condition makes the remaining mean correction nonnegative.
+
+After including the edge remainder in \eqref{intro:arcsine},
+the scalar estimates bound each coordinate loss above by
+$C\widehat f(i)\ell_i$, with a common $C\ge0$.
+The profile budget therefore gives
+\[
+ D(T_\rho f)\ge N_\rho-C\frac{D(T_\rho f)}{\rho},
+ \qquad
+ \frac{D(T_\rho f)}{\rho}\ge\frac{N_\rho}{\rho+C}.
+\]
+Thus no factor depending on $|K|$ is needed.
+The condition $N_\rho>(\rho+C)\atanh\rho$ implies
+$G_f'(\rho)>0$ by \eqref{intro:gap-slope}.
+Theorem~\ref{as:gate} gives the explicit coefficients and scalar
+conditions used to establish this comparison.
+
+\medskip
+\noindent\textbf{Joining the spectral and local comparisons.}
+We combine the spectral bound with a local estimate near
+dictators. Put $\alpha=\max_i\widehat f(i)$ and
+$\delta(f)=(1-\alpha)/2$.
+Theorem~\ref{ub:local} gives
+\[
+ -G_f(\rho)=\Phi(\rho)-A_\rho(f)
+ \ge M_\rho(\alpha),\qquad
+ M_\rho(a)=(1-\rho^2)H(\rho a)
+              -(1-\rho^2a)H(\rho).
+\]
+The underlying one-coordinate entropy estimate follows from
+Yu~\cite[Theorem~6.2]{Yu2026Local}; we derive the mean correction
+needed for this bound.
+Since $M_\rho$ is concave and $M_\rho(1)=0$, checking
+$M_\rho(a_0)\ge0$ proves $G_f(\rho)\le0$ for every function
+with $\alpha\ge a_0$.
+
+For $\rho=\tanh u$ with $u\ge8$, we have
+$(3/2)e^{-u}<1/64$.
+Lemma~\ref{rt:local-junction} therefore proves CK whenever
+$0<\delta(f)\le(3/2)e^{-u}$; dictators satisfy equality.
+On the complementary range,
+Proposition~\ref{qual:tail-derivative} uses the spectral bound
+to prove $D(T_\rho f)>\rho u$ whenever $G_f(\rho)>0$.
+Thus the two estimates give
+\[
+ \begin{aligned}
+ \delta(f)\le\tfrac32e^{-u}
+ &\quad\Longrightarrow\quad G_f(\rho)\le0,\\
+ \delta(f)\ge\tfrac32e^{-u},\quad G_f(\rho)>0
+ &\quad\Longrightarrow\quad G_f'(\rho)>0.
+ \end{aligned}
+\]
+Because the two ranges meet, every positive value of $G_f$
+has positive derivative when $u\ge8$.
+
+On $49/50\le\rho\le\tanh8$, the local estimate and the
+verified spectral inequalities give the same implication
+$G_f(\rho)>0\Rightarrow G_f'(\rho)>0$.
+If $G_f$ were positive anywhere in $[49/50,1)$, it would
+increase for as long as it remained positive.
+Continuity would prevent it from returning to zero,
+contradicting $G_f(1)=-\Phi(\mu)\le0$.
+This proves CK throughout $[49/50,1]$.
+The function $f$ stays fixed throughout this argument;
+the auxiliary set $K$ may vary with $\rho$.
+
+Proposition~\ref{ub:lower-interval} covers
+$0\le\rho\le457/500$, and
+Theorems~\ref{ub:upper-middle} and~\ref{ub:last-middle}
+cover $457/500\le\rho\le49/50$.
+Together these arguments prove CK at every correlation.
+
+\subsection{Coverage and verification}
+
+For smaller correlations, Fourier energy and the integrated entropy
+bound complement one another. When the first-level weight
+$W_1(f)=\sum_i \widehat f(i)^2$ is small, quadratic or cubic energy estimates
+control the information directly. In the cubic estimate, conditional
+Harris association bounds the second Fourier level using one or two
+retained coordinates. When $W_1(f)$ is large, the profile clock gives
+the required entropy bound. This yields the following complete cover.
+
+\begin{table}[htbp]\centering\normalsize
+\begin{tabular}{@{}lll@{}}
+\toprule
+Correlation range & Main comparison & Section\\
+\midrule
+$[0,457/500]$ & Local entropy and quadratic energy & \ref{ub:lower}\\
+$[457/500,49/50]$ & Cubic energy or profile clock & \ref{sec:cover}\\
+$[49/50,\tanh8]$ & Local entropy and spectral criterion & \ref{ub:high-cover}\\
+$[\tanh8,1]$ & Analytic local and spectral comparison & \ref{sec:qualitative-completion}\\
+\bottomrule
+\end{tabular}
+\vspace*{3mm}
+\caption{Every interval is covered for all means and dimensions.}
+\end{table}
+
+The analytic reductions leave explicit scalar inequalities on compact
+domains. Convexity reduces the middle-range clocks to boundary values
+of the retained squared influences; supporting lines make the integrals
+explicit. A fourth-moment bound treats the mean in the two-coordinate
+region without a mean partition. At high correlation, convex upper
+bounds reduce the spectral costs to four height endpoints on each of
+24 noise intervals. Outward-rounded interval arithmetic verifies these
+nontrivial compact comparisons and exact arithmetic verifies coverage.
+The argument for $u\ge8$ is analytic. Appendix~\ref{app:certificate}
+describes the interval computations and how to reproduce them.
+
+Additional entropy and Hellinger bounds for finite reversible Markov
+semigroups appear in the arXiv version
+\cite[Section~6.3, Theorem~6.5]{KyTran2026Full}.
+
+Section~\ref{sec:preliminaries} fixes notation and the monotone reduction.
+Sections~\ref{ub:lower}--\ref{sec:cover} establish the local, energy,
+and integrated entropy bounds. Sections~\ref{sec:full-head}
+and~\ref{sec:coordinate-spectral} develop the arcsine and spectral
+comparisons, and Section~\ref{sec:qualitative-completion} completes
+the proof near the noiseless endpoint.
+
+\section{Preliminaries and monotone reduction}
+\label{sec:preliminaries}
+
+We introduce the Fourier expansion and the noise operator on the
+uniform cube, then reduce the information inequality to increasing
+Boolean functions.
+
+Let $n\ge1$ and write $[n]=\{1,\ldots,n\}$.
+Unless another measure is specified, $X$ is uniform on
+$\{-1,1\}^n$ and
+$\E h=2^{-n}\sum_{x\in\{-1,1\}^n}h(x)=\E[h(X)]$.
+For real-valued functions $h,k:\{-1,1\}^n\to\R$, write
+$\langle h,k\rangle=\E[hk]$,
+$\|h\|_p=(\E|h|^p)^{1/p}$ for $1\le p<\infty$, and
+$\|h\|_\infty=\max_x|h(x)|$.
+A Boolean function is a map
+$f:\{-1,1\}^n\to\{-1,1\}$; its noisy averages take values
+in $[-1,1]$.
+Scalar functions act pointwise: for example,
+$H(h)(x)=H(h(x))$ when $h$ takes values in $[-1,1]$.
+
+For $K\subseteq[n]$, let $K^c=[n]\setminus K$ and
+$x_K=(x_i)_{i\in K}\in\{-1,1\}^K$.
+Write $x_{-i}=x_{[n]\setminus\{i\}}$.
+Expectations with a coordinate subscript average only over those
+coordinates, keeping the others fixed.
+The cube with no coordinates consists of a single point.
+
+\subsection{Fourier--Walsh expansion and Fourier levels}
+
+We use the standard uniform-cube Fourier conventions; see
+\cite[Sections~1.3--1.4]{ODonnell2014} and
+\cite[Chapter~IV]{GarbanSteif2011}.
+For $S\subseteq[n]$, define
+$\chi_S:\{-1,1\}^n\to\{-1,1\}$ by
+$\chi_S(x)=\prod_{i\in S}x_i$, with $\chi_\varnothing=1$.
+If $S\ne T$, a coordinate belonging to exactly one of these sets
+appears to the first power in $\chi_S\chi_T$.
+Averaging over that coordinate gives $\E[\chi_S\chi_T]=0$.
+Since $\chi_S^2=1$, the parities are orthonormal.
+There are $2^n$ of them, equal to the dimension of the space of
+real-valued functions on the cube, so they form a basis.
+
+Consequently, every $h:\{-1,1\}^n\to\R$ has a unique
+Fourier--Walsh expansion
+\[
+ h(x)=\sum_{S\subseteq[n]}\widehat h(S)\chi_S(x),
+ \qquad
+ \widehat h(S)=\E[h(X)\chi_S(X)].
+\]
+In particular, $\widehat h(\varnothing)=\E h$.
+We abbreviate the singleton coefficient
+$\widehat h(\{i\})=\E[h(X)X_i]$ as $\widehat h(i)$.
+The terms with $|S|=k$ form the degree-$k$ part of the expansion.
+
+For a Boolean function $f$, put $\mu=\E f$.
+For $0\le k\le n$, define its Fourier weight at level $k$ by
+$W_k(f)=\sum_{|S|=k}\widehat f(S)^2$. We set $W_k(f)=0$ for $k>n$.
+Parseval's identity gives
+\[
+ \sum_{k=0}^n W_k(f)=\E f^2=1,
+ \qquad W_0(f)=\mu^2,\qquad
+ \sum_{k \ge 1} W_k(f)=\Var(f)=1-\mu^2.
+\]
+Thus the positive-degree weights decompose the variance according
+to Fourier level. A dictator has all its weight at level one.
+The weight $W_1(f)=\sum_i\widehat f(i)^2$ records the total squared
+singleton coefficients, whereas distance to a dictator depends
+on the largest individual coefficient.
+
+Write $\alpha(f)=\max_i|\widehat f(i)|$.
+For $i\in[n]$ and $\sigma\in\{-1,1\}$,
+$\PP(f(X)\ne\sigma X_i)=(1-\sigma\widehat f(i))/2$.
+Minimizing over $i$ and $\sigma$ gives
+\begin{equation}\label{eq:dictator-distance}
+ \delta(f):=\min_{i\in[n],\,\sigma\in\{-1,1\}}
+       \PP\bigl(f(X)\ne\sigma X_i\bigr)
+ =\frac{1-\alpha(f)}2.
+\end{equation}
+We use this identity to translate bounds on the largest singleton
+coefficient into bounds on the distance to a signed dictator.
+
+\subsection{Noise, posterior means, and information}
+\label{sec:noise}
+
+For $\rho\in[0,1]$, the noise operator $T_\rho$ acts linearly on
+real-valued functions $h:\{-1,1\}^n\to\R$; see
+\cite[Definition~2.46 and Proposition~2.47]{ODonnell2014}.
+For fixed $y\in\{-1,1\}^n$, obtain $Z\in\{-1,1\}^n$ by
+independently flipping each coordinate of $y$ with probability
+$(1-\rho)/2$.
+Define $T_\rho h:\{-1,1\}^n\to\R$ by
+\[
+ (T_\rho h)(y)=\E[h(Z)]
+ =\sum_{x\in\{-1,1\}^n}
+     h(x)\prod_{i=1}^n\frac{1+\rho x_i y_i}{2}.
+\]
+The weights are nonnegative and sum to one, so $T_\rho$ preserves
+the range $[-1,1]$.
+Also $T_1h=h$ and $T_0h$ is the constant function $\E h$.
+For a nonconstant Boolean function $f$, all values of $T_\rho f$
+lie in $(-1,1)$ when $\rho<1$, because every kernel weight is
+then positive.
+
+Let $Y_\rho$ be obtained from the uniform vector $X$ by
+independently flipping each coordinate with probability
+$(1-\rho)/2$.
+The vector $Y_\rho$ is also uniform.
+Bayes' rule therefore gives
+$\PP(X=x\mid Y_\rho=y)=\PP(Y_\rho=y\mid X=x)$,
+which is the kernel above. Consequently,
+\[
+ (T_\rho h)(y)=\E[h(X)\mid Y_\rho=y].
+\]
+
+Independence gives
+$\E[\chi_S(Z)]=\rho^{|S|}\chi_S(y)$, and hence
+\[
+ T_\rho h=\sum_{S\subseteq[n]}
+             \rho^{|S|}\widehat h(S)\chi_S,
+ \qquad
+ T_\eta T_\rho=T_{\eta\rho}
+ \quad \text{for } 0\le\eta,\rho\le 1.
+\]
+Thus noise preserves the mean and multiplies every degree-$k$
+Fourier coefficient by $\rho^k$.
+The semigroup identity follows by multiplying these factors
+for two successive rounds of noise.
+For a Boolean function, Parseval gives
+\[
+ \Var(T_\rho f)
+ =\sum_{k=1}^n\rho^{2k}W_k(f)
+ \le\rho^2(1-\mu^2).
+\]
+
+We use the binary-channel formulation of
+\cite[Section~II-A]{CourtadeKumar2014}, with sign-valued bits
+and natural logarithms.
+Since a sign-valued random variable is determined in distribution
+by its mean,
+\[
+ \PP\{f(X)=1\mid Y_\rho=y\}
+ =\frac{1+(T_\rho f)(y)}2.
+\]
+Thus $T_\rho f$ is the posterior mean of the bit $f(X)$.
+A value near zero corresponds to substantial uncertainty,
+while a value near $\pm1$ corresponds to high confidence.
+By \eqref{eq:entropy-functions}, the conditional entropy at
+observation $y$ is $H((T_\rho f)(y))$.
+
+Averaging over the uniform observation and subtracting from
+the initial entropy $H(\mu)$ gives
+\begin{equation}\label{eq:posterior-entropy}
+ \begin{aligned}
+ E_\rho(f)
+ &=\E H(T_\rho f)
+   =2^{-n}\sum_{y\in\{-1,1\}^n}H((T_\rho f)(y)),\\
+ A_\rho(f)
+ &=H(\mu)-E_\rho(f)
+   =\E\Phi(T_\rho f)-\Phi(\mu).
+ \end{aligned}
+\end{equation}
+For fixed $f$, both $E_\rho(f)$ and $A_\rho(f)$ are scalar
+functions of $\rho\in[0,1]$ with values in $[0,H(\mu)]$.
+The function is \emph{balanced} when $\mu=0$, in which case
+the bit $f(X)$ has entropy $\log2$.
+For an unbalanced function, this entropy is smaller by
+$\Phi(\mu)$; this is the mean correction appearing in the
+information deficit.
+Constant functions have zero information.
+
+For a signed dictator $f(x)=\sigma x_i$,
+$(T_\rho f)(y)=\sigma\rho y_i$, so
+$E_\rho(f)=H(\rho)$ and $A_\rho(f)=\Phi(\rho)$.
+We will also use that $H$ is even and concave, decreases on
+$[0,1]$, and satisfies
+$H'(t)=-\atanh t$ for $-1<t<1$.
+
+\subsection{Monotone compression and influences}
+
+An increasing, or monotone, Boolean function satisfies $f(x)\le f(y)$
+whenever $x_i\le y_i$ for every coordinate.
+To obtain an increasing function, we sort the two values on each
+coordinate fiber, placing the smaller value at $-1$ and the larger
+at $1$. This preserves the mean and can only increase information.
+The information comparison is due to Courtade and Kumar
+\cite[Lemma~2 and Remark~2]{CourtadeKumar2014}.
+
+\begin{lemma}[Coordinate compression]\label{lem:compression}
+Every $f:\{-1,1\}^n\to\{-1,1\}$ admits an increasing
+$g:\{-1,1\}^n\to\{-1,1\}$ with $\E g=\E f$ such that
+\[
+ A_\rho(g)\ge A_\rho(f)
+ \quad\text{for every }\rho\in[0,1],
+ \qquad
+ \widehat g(i)\ge|\widehat f(i)|
+ \quad\text{for every }i\in[n].
+\]
+In particular, $\delta(g)\le\delta(f)$.
+\end{lemma}
+
+\begin{proof}
+Fix a coordinate $i$ and write
+$f(x_i,z)=u(z)+x_i v(z)$, where
+$u,v:\{-1,1\}^{[n]\setminus\{i\}}\to\R$ are the average and
+half-difference of the two sections.
+Sorting coordinate $i$ produces
+$\widetilde f(x_i,z)=u(z)+x_i|v(z)|$.
+In particular, $\E\widetilde f=\E u=\E f$.
+
+For a fixed outside output $y$, put
+$b=(T_\rho u)(y)$, $d=(T_\rho v)(y)$, and
+$e=(T_\rho|v|)(y)$, where the noise operator acts on the
+remaining coordinates.
+The noisy values on this output fiber are $b\pm\rho d$
+before sorting and $b\pm\rho e$ afterward.
+Positivity of the noise operator gives $|d|\le e$.
+Since $\Phi$ is convex, the function
+$t\mapsto[\Phi(b+t)+\Phi(b-t)]/2$
+is even and nondecreasing for $t\ge0$ on its domain.
+Hence
+\[
+ \frac{\Phi(b+\rho d)+\Phi(b-\rho d)}2
+ \le
+ \frac{\Phi(b+\rho e)+\Phi(b-\rho e)}2.
+\]
+Averaging over $y$ gives
+$\E\Phi(T_\rho f)\le\E\Phi(T_\rho\widetilde f)$.
+The means agree, so
+$A_\rho(f)\le A_\rho(\widetilde f)$.
+
+The sorted sections are the pointwise minimum and maximum of
+the original sections. If those sections are increasing in
+another coordinate, their minimum and maximum remain increasing
+in that coordinate.
+Thus sorting preserves monotonicity in previously sorted
+coordinates. Sorting each coordinate once produces an increasing
+$g$, and this construction is independent of $\rho$.
+
+Sorting a coordinate $j\ne i$ preserves the $i$th singleton
+coefficient: $X_i$ is constant on each $j$-fiber, whose sum of
+function values is unchanged.
+Sorting coordinate $i$ replaces its coefficient $\E v$ by
+$\E|v|\ge|\E v|$.
+Since the other sorting steps preserve this coefficient,
+$\widehat g(i)\ge|\widehat f(i)|$ for every $i$.
+The assertion about $\delta$ follows.
+\end{proof}
+
+In each differential argument, we fix the compressed function before
+varying $\rho$, so its Fourier coefficients remain constant.
+For increasing Boolean functions, these coefficients also have
+a direct interpretation as coordinate influences.
+
+Let $x^{\oplus i}$ denote $x$ with coordinate $i$ flipped.
+The influence of $i$ on a Boolean function is
+\[
+ \operatorname{Inf}_i(f)
+ =\PP\bigl(f(X)\ne f(X^{\oplus i})\bigr).
+\]
+For $h:\{-1,1\}^n\to\R$, define
+$\partial_i h:\{-1,1\}^{[n]\setminus\{i\}}\to\R$ by
+\[
+ \partial_i h(x_{-i})
+ =\frac{h(x_{-i},1)-h(x_{-i},-1)}2.
+\]
+Here $(x_{-i},\pm1)$ means inserting $\pm1$ in coordinate $i$.
+When needed, we view $\partial_i h$ as a function on
+$\{-1,1\}^n$ that ignores $x_i$; its norms and expectations
+are unchanged.
+Its Fourier expansion is
+$\partial_i h=\sum_{S\ni i}\widehat h(S)\chi_{S\setminus\{i\}}$,
+so differentiation removes coordinate $i$ from each contributing
+Fourier mode.
+
+For Boolean $f$, the derivative takes values in $\{-1,0,1\}$,
+and $|\partial_i f|$ indicates whether flipping $i$ changes
+the output. Therefore
+\[
+ \operatorname{Inf}_i(f)
+ =\E|\partial_i f|=\E(\partial_i f)^2.
+\]
+If $f$ is increasing, then $\partial_i f\ge0$, and hence
+$\operatorname{Inf}_i(f)=\E\partial_i f=\widehat f(i)$.
+A nonconstant function changes across at least one cube edge,
+so every nonconstant increasing function has a positive singleton
+coefficient.
+
+For two distinct coordinates,
+\begin{equation}\label{eq:pair-bound}
+ \widehat f(i)+\widehat f(j)
+ =\E[f(X)(X_i+X_j)]
+ \le\E|X_i+X_j|=1.
+\end{equation}
+For $n\ge2$, order the singleton coefficients of an increasing
+function as $\widehat f(1)\ge\cdots\ge\widehat f(n)\ge0$.
+Then $\widehat f(2)\le1/2$, and every $i\ge2$ satisfies
+$\widehat f(i)\le\min\{\widehat f(1),1-\widehat f(1)\}$.
+These bounds supply the coefficient caps used in
+Lemma~\ref{jp:profile}.
+
+\subsection{The Laplacian and entropy production}
+
+For $h:\{-1,1\}^n\to\R$, define
+\[
+ (\mathcal L_i h)(x)
+ =\frac{h(x)-h(x^{\oplus i})}{2}
+ =x_i\partial_i h(x_{-i}),
+ \qquad
+ \mathcal L=\sum_{i=1}^n\mathcal L_i.
+\]
+The operator $\mathcal L_i$ retains precisely the Fourier terms
+containing $i$, so $\mathcal L\chi_S=|S|\chi_S$.
+Averaging over coordinate $i$ gives
+$\E[h\mathcal L_i h]=\E(\partial_i h)^2$.
+Thus the Dirichlet energy has the edge and Fourier representations
+\begin{equation}\label{eq:dirichlet-energy}
+ \operatorname{Dir}(h)
+ =\E[h\mathcal Lh]
+ =\sum_i\E(\partial_i h)^2
+ =\sum_{S\subseteq[n]}|S|\widehat h(S)^2.
+\end{equation}
+Each Fourier mode contributes its squared coefficient multiplied
+by its degree. For Boolean $f$, this is the total influence
+$\sum_i\operatorname{Inf}_i(f)$.
+We also write
+$\operatorname{Dir}_i(h)=\E[h\mathcal L_i h]
+=\E(\partial_i h)^2$.
+
+For $h:\{-1,1\}^n\to(-1,1)$, define its coordinate entropy
+production and total entropy production by
+\begin{equation}\label{eq:entropy-production}
+ \mathcal D_i(h)=\E[(\mathcal L_i h)\atanh h],
+ \qquad
+ D(h)=\sum_i\mathcal D_i(h)
+     =\E[(\mathcal Lh)\atanh h].
+\end{equation}
+Writing $h_\pm(x_{-i})=h(x_{-i},\pm1)$, we have
+\[
+ \mathcal D_i(h)
+ =\E_{X_{-i}}\left[
+   \frac{(h_+-h_-)(\atanh h_+-\atanh h_-)}4
+   \right]\ge0,
+\]
+because $\atanh$ is increasing.
+
+Let $f$ be a nonconstant Boolean function and $0<\rho<1$.
+The noise kernel is strictly positive, so $|T_\rho f|<1$
+and the entropy production is finite.
+Fourier differentiation gives
+$\rho\partial_\rho T_\rho f=\mathcal LT_\rho f$.
+Since $H'=-\atanh$, differentiating the finite average defining
+$E_\rho(f)$ gives
+\[
+ \rho E'_\rho(f)
+ =\E[H'(T_\rho f)\mathcal LT_\rho f]
+ =-D(T_\rho f).
+\]
+Together with $\Phi'(\rho)=\atanh\rho$, this yields
+\begin{equation}\label{eq:gap-derivative}
+ -\rho E'_\rho(f)=D(T_\rho f),
+ \qquad
+ \rho G_f'(\rho)=D(T_\rho f)-\rho\atanh\rho.
+\end{equation}
+
+In noise time $\tau=-\log\rho$, we have
+$T_{e^{-\tau}}=e^{-\tau\mathcal L}$, since both operators
+multiply $\chi_S$ by $e^{-\tau|S|}$.
+Moreover,
+$dE_{e^{-\tau}}(f)/d\tau=D(T_{e^{-\tau}}f)\ge0$:
+adding noise increases conditional entropy.
+For a dictator, $D(T_\rho f)=\rho\atanh\rho$.
+Thus the second identity in \eqref{eq:gap-derivative}
+compares the slope of the information gap with the excess
+production over a dictator.
+We often write $u=\atanh\rho$, so $\rho\uparrow1$ corresponds
+to $u\to\infty$.
+
+The differential argument uses the following elementary principle:
+a function whose derivative is nonnegative wherever it is positive
+cannot decrease from a positive value to a nonpositive endpoint.
+
+\begin{lemma}\label{ub:barrier}
+Let $a<b$, and let $G:[a,b]\to\R$ be continuous and differentiable
+on $(a,b)$, with $G(b)\le0$.
+If $G'(x)\ge0$ for every $x\in(a,b)$ with $G(x)>0$,
+then $G\le0$ on $[a,b]$.
+\end{lemma}
+
+\begin{proof}
+Suppose $G(x_0)>0$ for some $x_0<b$.
+Since $G(b)\le0$, continuity gives a first zero
+$r\in(x_0,b]$.
+On $[x_0,r)$, the function is positive and therefore nondecreasing.
+Continuity then gives
+$G(r)\ge G(x_0)>0$, a contradiction.
+\end{proof}
+
+For a fixed function, $G_f$ is continuous on $[0,1]$ and
+differentiable on $(0,1)$, with
+$G_f(0)=0$ and $G_f(1)=-\Phi(\mu)\le0$.
+At an interior point where $G_f(\rho)>0$,
+\[
+ E_\rho(f)<H(\rho)-\Phi(\mu)\le H(\rho).
+\]
+When applying Lemma~\ref{ub:barrier}, we keep the function fixed.
+Auxiliary projections and scalar parameters may depend on $\rho$,
+but their derivatives do not enter the argument.
+
+We will also use the entropy expansion and bounds
+\begin{equation}\label{ub:entropy-series}
+ \Phi(t)=\sum_{k\ge1}\frac{t^{2k}}{2k(2k-1)},
+ \qquad
+ \frac{t^2}{2}\le\Phi(t)\le(\log2)t^2
+ \qquad(-1\le t\le1).
+\end{equation}
+For $|t|<1$, differentiating the series gives $\atanh t=\Phi'(t)$,
+and $\Phi(0)=0$ fixes the integration constant.
+Continuity gives the endpoint values.
+The lower bound follows from the first term; the upper bound
+uses $t^{2k}\le t^2$ and the fact that the coefficients sum
+to $\Phi(1)=\log2$.
+
+
+\section{Local entropy and Fourier bounds at low correlation}\label{ub:lower}
+
+We prove CK through correlation $0.914$ while developing the local
+estimates used in the rest of the paper. The balanced conclusion on
+this range is due to Yu \cite{Yu2026Local}; the purpose here is to
+include arbitrary means. Functions close to a dictator are controlled by
+their largest singleton coefficient. For the remaining functions, we
+bound $W_1+\mu^2$ and use it to estimate the conditional entropy.
+We also develop a two-coordinate bound for the intermediate range.
+
+\subsection{Entropy contraction}
+
+Entropy contraction quantifies how averaging reduces a function's
+departure from its mean. For a nonnegative function $v$, write
+$\Ent(v)=\E[v\log v]-\E v\log\E v$; if $\E v=1$, this is the
+relative entropy of the probability density $v$ with respect to the
+uniform measure. Applying it to $1+g$ and $1-g$ converts this functional
+inequality into a statement about the conditional entropy of a bit.
+We first collect the cube inequalities (see \cite[Sections~2.3, 9.3, and Exercises~10.23--10.24]{ODonnell2014}) needed for that conversion and
+for the later influence estimate. Here $\Ent$ is a scalar functional
+of nonnegative cube functions, with the convention $0\log0=0$.
+
+\begin{theorem}[Cube functional inequalities
+{\cite{Gross1975,ODonnell2014}}]\label{ext:cube-functional}
+For every $h:\{-1,1\}^n\to\R$, with the uniform measure,
+$\Var(h)\le\operatorname{Dir}(h)$ and
+$\Ent(h^2)\le2\operatorname{Dir}(h)$.
+For $0\le\eta\le1$, hypercontractivity gives
+$\|T_\eta h\|_2\le\|h\|_{1+\eta^2}$.
+\end{theorem}
+The following standard consequence
+of the cube log-Sobolev inequality is stated in our normalization; see
+\cite{Gross1975} and \cite[Exercise~10.23]{ODonnell2014}.
+
+\begin{lemma}[Entropy contraction]\label{jp:contraction}
+For $f:\{-1,1\}^n\to[0,\infty)$, write
+$\Ent(f)=\E[f\log f]-\E f\log\E f$.
+For $0\le\eta\le1$, $\Ent(T_\eta f)\le\eta^2\Ent(f)$.
+Consequently, for every $g:\{-1,1\}^n\to[-1,1]$,
+\[
+ \E H(T_\eta g)\ge \eta^2\E H(g)+(1-\eta^2)H(\E g).
+\]
+\end{lemma}
+\begin{proof}
+First suppose that $f>0$. For each $i\in[n]$, let
+$\Ent_i(f)=\E_{X_i}[f\log f]
+-(\E_{X_i}f)\log(\E_{X_i}f)$, with all other coordinates fixed.
+By tensorization of entropy
+\cite[Theorem~4.22]{BoucheronLugosiMassart2013},
+we have $\Ent(f)\le\sum_{i=1}^n\E[\Ent_i(f)]$,
+where the outer expectation averages the remaining coordinates.
+
+Fix $i$ and $x_{-i}$, and write
+$f_\pm=f(x_1,\ldots,x_{i-1},\pm1,x_{i+1},\ldots,x_n)$.
+Set $m=(f_++f_-)/2$ and $t=(f_+-f_-)/(f_++f_-)$,
+so that $m>0$, $|t|<1$, and $f_\pm=m(1\pm t)$.
+Then
+\[
+ \Ent_i(f)(x_{-i})
+ =\frac{f_+\log f_++f_-\log f_-}{2}-m\log m
+ =m\Phi(t).
+\]
+The series
+$\Phi(t)=\sum_{k\ge1}t^{2k}/(2k(2k-1))$ and
+$t\atanh t=\sum_{k\ge1}t^{2k}/(2k-1)$ give
+$t\atanh t\ge2\Phi(t)$. Thus, with the other coordinates
+still fixed,
+\[
+ \E_{X_i}\bigl[(\mathcal L_i f)
+                  (\mathcal L_i\log f)\bigr]
+ =\frac{(f_+-f_-)(\log f_+-\log f_-)}{4}
+ =mt\atanh t
+ \ge2\Ent_i(f)(x_{-i}).
+\]
+
+For $0<\eta<1$, the identity
+$\eta\partial_\eta T_\eta f=\mathcal L T_\eta f$
+and preservation of the mean give
+\[
+ \begin{aligned}
+ \eta\frac{d}{d\eta}\Ent(T_\eta f)
+ &=\E\bigl[(\mathcal L T_\eta f)\log(T_\eta f)\bigr]\\
+ &=\sum_{i=1}^n
+   \E\bigl[(\mathcal L_iT_\eta f)
+           (\mathcal L_i\log(T_\eta f))\bigr]\\
+ &\ge2\sum_{i=1}^n\E[\Ent_i(T_\eta f)]
+ \ge2\Ent(T_\eta f).
+ \end{aligned}
+\]
+Here the second equality is integration by parts, the first
+inequality applies the preceding coordinate estimate to
+$T_\eta f$, and the last inequality is tensorization.
+It follows that $\Ent(T_\eta f)/\eta^2$ is nondecreasing
+in $\eta$. Comparing with its value at $\eta=1$ yields
+$\Ent(T_\eta f)\le\eta^2\Ent(f)$.
+The endpoints $\eta=0,1$ follow by continuity.
+For nonnegative $f$, apply the result to $f+\epsilon$
+and let $\epsilon\downarrow0$.
+
+Finally, for every $g:\{-1,1\}^n\to[-1,1]$,
+$\Ent(1+g)+\Ent(1-g)=2\{H(\E g)-\E H(g)\}$.
+Apply entropy contraction to $1+g$ and $1-g$ and add
+the resulting inequalities. Since
+$T_\eta(1\pm g)=1\pm T_\eta g$ and
+$\E T_\eta g=\E g$, this gives
+\[
+ H(\E g)-\E H(T_\eta g)
+ \le\eta^2\bigl(H(\E g)-\E H(g)\bigr).
+\]
+Rearranging proves the claimed posterior-entropy bound.
+\end{proof}
+
+For a fixed set of retained coordinates $K\subseteq[n]$, called the
+\emph{core}, let $T_\eta^K$ act on real-valued cube functions by applying
+noise only in $K$, leaving the other coordinates fixed. Thus
+$T_\eta^K\chi_S=\eta^{|S\cap K|}\chi_S$ and
+$T_\eta=T_\eta^{K^c}T_\eta^K$.
+Define the conditional mean $f_K:\{-1,1\}^K\to[-1,1]$ by
+\[
+ f_K(x_K)=\E_{X_{K^c}}f(x_K,X_{K^c})
+         =\sum_{S\subseteq K}\widehat f(S)\chi_S(x_K).
+\]
+We also view $f_K$ as a function on $\{-1,1\}^n$ ignoring $K^c$;
+$T_\eta^K f_K$ is equivalently ordinary noise on the smaller cube.
+Set $v=T_\eta^K f$. For each fixed $x_K$, apply
+Lemma~\ref{jp:contraction} to the function
+$x_{K^c}\mapsto v(x_K,x_{K^c})$. Its outside average is
+$\E_{X_{K^c}}v(x_K,X_{K^c})=(T_\eta^K f_K)(x_K)$.
+Averaging the resulting inequality over $x_K$ gives
+\begin{equation}\label{jp:core-contraction}
+ E_\eta(f)\ge \eta^2\E H(T_\eta^K f)
+ +(1-\eta^2)\E_{X_K}H(T_\eta^K f_K).
+\end{equation}
+This also holds when the outside cube is a singleton.
+
+Entropy contraction also bounds the information retained after adding
+more noise. The next corollary lets us extend an information bound to
+smaller correlations and dispose of functions with large absolute mean.
+
+\begin{corollary}
+\label{ub:information-contraction}
+For every $f:\{-1,1\}^n\to\{-1,1\}$ with mean $\mu$
+and every $\eta,\rho_0\in[0,1]$,
+we have $A_{\eta\rho_0}(f)\le\eta^2 A_{\rho_0}(f)$.
+In particular, $A_\rho(f)\le\rho^2H(\mu)$
+for every $\rho\in[0,1]$.
+If $|\mu|\ge61/100$, then
+CK holds.
+\end{corollary}
+
+\begin{proof}
+Apply the posterior-entropy bound in
+Lemma~\ref{jp:contraction} to $g=T_{\rho_0}f$.
+Since $\E T_{\rho_0}f=\E f =\mu$ and
+$T_\eta T_{\rho_0}f=T_{\eta\rho_0}f$, we obtain
+\[
+ A_{\eta\rho_0}(f)
+ =H(\mu)-\E H(T_{\eta\rho_0}f)\le\eta^2\bigl(H(\mu)-\E H(T_{\rho_0}f)\bigr)
+ =\eta^2 A_{\rho_0}(f).
+\]
+Because $f$ takes values in $\{-1,1\}$, we have $H(f)=0$
+pointwise and hence $A_1(f)=H(\mu)$.
+Taking $\rho_0=1$ and $\eta=\rho$ therefore gives
+$A_\rho(f)\le\rho^2H(\mu)$.
+
+Finally, if $|\mu|\ge61/100$, monotonicity of $H$ and
+direct evaluation give
+\[
+ A_\rho(f)\le\rho^2H(\mu)
+ \le\rho^2H(61/100)\le\frac{\rho^2}{2}\le\Phi(\rho)
+ \qquad \text{for } 0\le\rho\le1. \qedhere
+\]
+\end{proof}
+
+Consequently, a bound $A_{\rho_0}(f)\le\rho_0^2/2$ at one positive
+correlation proves CK for the same function at every smaller correlation:
+contraction gives $A_\rho(f)\le\rho^2/2\le\Phi(\rho)$. This is how
+the estimate at $\rho=3/5$ will cover the interval down to zero.
+
+\subsection{An exact one-coordinate inequality at arbitrary mean}
+
+A large singleton coefficient means that $f$ is close to a signed
+dictator. We seek a sufficient condition for CK that depends only on
+that coefficient, uniformly in the mean. The first inequality below
+is the one-coordinate entropy specialization of Yu's arbitrary-mean
+bound \cite[Theorem~6.2]{Yu2026Local}; its balanced case is
+\cite[Theorem~4.6 and Remark~4.7]{Yu2026Local}. The second inequality
+removes the mean from the lower bound for the information deficit.
+For $0\le a\le1$, define
+\begin{equation}\label{eq:local-deficit}
+ M_\rho(a)=(1-\rho^2)H(\rho a)-(1-\rho^2a)H(\rho).
+\end{equation}
+The theorem shows that $M_\rho(a)$ bounds the information deficit
+below. Its concavity extends one nonnegative value to every larger
+singleton coefficient.
+
+\begin{theorem}[Local entropy comparison]\label{ub:local}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ have mean $\mu$,
+and let $i\in[n]$ and $\rho\in[0,1]$. Then
+\[
+ E_\rho(f)\ge\frac{1-\rho^2}{2}
+ \bigl[H(\mu+\rho\widehat f(i))+H(\mu-\rho\widehat f(i))\bigr]
+ +\rho^2|\widehat f(i)|H(\rho).
+\]
+Moreover, $\Phi(\rho)-A_\rho(f)\ge M_\rho(|\widehat f(i)|)$.
+
+The function $M_\rho$ is concave on $[0,1]$, strictly so
+when $0<\rho<1$, and $M_\rho(1)=0$.
+Consequently, if $M_\rho(A)\ge0$ for some $A\in[0,1]$
+and $\max_{i\in[n]}|\widehat f(i)|\ge A$,
+then $A_\rho(f)\le\Phi(\rho)$.
+\end{theorem}
+
+\begin{proof}
+Replacing $x_i$ by $-x_i$ if necessary, we may assume
+$a=\widehat f(i)\ge0$; this preserves the mean and the information.
+For fixed $x_{-i}$, noise in coordinate $i$ leaves a constant
+restriction unchanged and maps $x_i\mapsto\pm x_i$ to
+$x_i\mapsto\pm\rho x_i$. Hence
+\[
+ \E H(T_\rho^{\{i\}}f)
+ =\operatorname{Inf}_i(f)H(\rho)\ge aH(\rho),
+\]
+where
+$\operatorname{Inf}_i(f)=\E|\partial_i f|
+\ge|\E\partial_i f|=a$.
+Also,
+$f_{\{i\}}(x_i)=\E[f(X)\mid X_i=x_i]=\mu+ax_i$,
+so $T_\rho^{\{i\}}f_{\{i\}}(x_i)=\mu+\rho ax_i$.
+Substituting these expressions into
+\eqref{jp:core-contraction} with $K=\{i\}$ proves the first
+inequality. Since $\mu\pm a\in[-1,1]$, we also have
+$|\mu|+a\le1$.
+
+To obtain the second inequality, define, for $|s|\le1-a$,
+\[
+ B_{\rho,a}(s)=\Phi(s)+(1-\rho^2)
+ \left\{\frac{H(s+\rho a)+H(s-\rho a)}2-H(\rho a)\right\}.
+\]
+We show that $B_{\rho,a}\ge0$. This function is even and
+$B_{\rho,a}(0)=0$, so it suffices to prove convexity.
+Suppose first that $0<\rho<1$, $a<1$, and $|s|<1-a$.
+For each $\sigma\in\{-1,1\}$, we have $a\le1-\sigma s$,
+and therefore
+$(1-\sigma s)^2-\rho^2a^2
+\ge(1-\rho^2)(1-\sigma s)^2$.
+Using $-H''(t)=\tfrac12[(1-t)^{-1}+(1+t)^{-1}]$ gives
+\[
+B''_{\rho,a}(s)
+ =\frac1{1-s^2}
+   -\frac{1-\rho^2}{2}
+    \sum_{\sigma\in\{-1,1\}}
+    \frac{1-\sigma s}{(1-\sigma s)^2-\rho^2a^2}\ge\frac1{1-s^2}
+   -\frac12\sum_{\sigma\in\{-1,1\}}\frac1{1-\sigma s}
+ =0.
+\]
+Thus $B_{\rho,a}\ge0$, with boundary cases following
+by continuity. The first inequality now yields
+\[
+\Phi(\rho)-A_\rho(f)
+ =E_\rho(f)+\Phi(\mu)-H(\rho)\ge M_\rho(a)+B_{\rho,a}(\mu)
+ \ge M_\rho(a),
+\]
+which proves the second inequality.
+
+Finally, for $0<\rho<1$,
+$M''_\rho(a)=-(1-\rho^2)\rho^2/(1-\rho^2a^2)<0$
+and $M_\rho(1)=0$.
+By concavity, $M_\rho(A)\ge0$ implies
+$M_\rho(a)\ge0$ for every $a\in[A,1]$.
+Combining this with the second inequality proves the final assertion.
+\end{proof}
+
+A coefficient threshold that proves CK at $\rho_0$ remains sufficient
+at every smaller correlation. Yu \cite[Lemma~4.9]{Yu2026Local} proved
+this qualitative propagation; the next lemma also compares the size
+of the deficits after division by $\rho^2$.
+
+\begin{lemma}\label{ub:local-propagation}
+Fix $a\in[0,1]$. If $M_{\rho_0}(a)\ge0$ at some
+$0<\rho_0<1$, then for every $0<\rho\le\rho_0$,
+\[
+ \frac{M_\rho(a)}{\rho^2}\ge
+ \frac{M_{\rho_0}(a)}{\rho_0^2}\ge0.
+\]
+In particular, $M_\rho(a)\ge0$ for $0\le\rho\le\rho_0$.
+\end{lemma}
+
+\begin{proof}
+If $a=1$, then $M_\rho(a)=0$ identically.
+If $a=0$, then
+$M_\rho(0)=\Phi(\rho)-\rho^2\log2<0$ for $0<\rho<1$,
+so the hypothesis is vacuous.
+We may therefore assume $0<a<1$.
+
+Set $F(\rho)=M_\rho(a)/\rho^2$.
+With $c_n=1/[2n(2n-1)]$, the entropy series gives
+\[
+ F(\rho)
+=(1-a)\left(\frac{1+a}{2}-\log2\right)
+   +\sum_{n\ge1}d_n\rho^{2n},
+\]
+where $d_n=c_{n+1}(1-a^{2n+2})-c_n(a-a^{2n})$.
+To determine the signs of $d_n$, compare the two positive
+terms in their definition. Writing $b(x)=x/(1-a^x)$
+for $x>0$, their ratio is
+\[
+ R_n:=
+ \frac{c_{n+1}(1-a^{2n+2})}{c_n(a-a^{2n})}
+ =\frac{2n}{a(2n+1)}
+   \frac{b(2n-1)}{b(2n+2)}.
+\]
+Thus $d_n$ has the sign of $R_n-1$.
+For $t=-\log a>0$,
+$(\log b)''(x)
+=-x^{-2}+\frac{t^2}{4\sinh^2(tx/2)}<0$.
+Hence $b(x)/b(x+3)$ is strictly increasing.
+It follows that $R_n$ strictly increases to $1/a>1$.
+Consequently, the coefficients $d_n$ are eventually positive
+and change sign at most once, from negative to positive.
+
+Since $F(1)=0$ by continuity, the hypothesis $F(\rho_0)\ge0$
+rules out the case where all $d_n$ are nonnegative:
+in that case $F$ would be strictly increasing and therefore
+negative on $(0,1)$.
+Let $m$ be the last index with $d_m<0$. Then
+\[
+ \frac{F'(\rho)}{\rho^{2m-1}}
+ =\sum_{n\ge1}2n d_n\rho^{2(n-m)}
+\]
+is strictly increasing on $(0,1)$.
+Indeed, terms with $n<m$ have negative coefficients and
+negative exponents, the term with $n=m$ is constant,
+and terms with $n>m$ have nonnegative coefficients and
+positive exponents, with some coefficients strictly positive.
+Termwise differentiation is valid on compact subintervals
+of $(0,1)$.
+
+If $F'(r)\ge0$ for some $0<r\le\rho_0$, this strict increase
+would imply $F'(\rho)>0$ for every $r<\rho<1$.
+We would then have $F(\rho_0)<F(1)=0$, a contradiction.
+Thus $F'<0$ on $(0,\rho_0]$, and
+$F(\rho)\ge F(\rho_0)\ge0$ for $0<\rho\le\rho_0$.
+Finally, $M_0(a)=0$.
+\end{proof}
+
+Together with concavity in $a$, this means that one check of
+$M_{\rho_0}(a_0)\ge0$ covers every smaller correlation and every
+larger singleton coefficient. The endpoint $\rho_0=1$ is excluded:
+$M_1(a)=0$ for every $a$, so that endpoint alone gives no information.
+
+At $\rho=\tanh u$, the next lemma gives the explicit sufficient
+condition $\delta(f)\le e^{-u}$. Section~\ref{sec:coordinate-spectral}
+will therefore only need to treat functions outside this neighborhood.
+
+\begin{lemma}\label{ub:exponential-local}
+Let $f:\{-1,1\}^n\to\{-1,1\}$. If $u\ge\log9$ and
+$\delta(f)\le e^{-u}$, then CK holds at
+$\rho=\tanh u$.
+\end{lemma}
+
+\begin{proof}
+Set $\delta=e^{-u}\le1/9$, $p=\delta^2/(1+\delta^2)$,
+and $a=1-2\delta$. The hypothesis gives
+$\max_i|\widehat f(i)|=1-2\delta(f)\ge a$,
+so Theorem~\ref{ub:local} reduces the claim to
+$M_\rho(a)>0$.
+We have $\rho=1-2p$, $H(\rho)=H_{\rm b}(p)$, and
+$H(\rho a)=H_{\rm b}(\delta+p(1-2\delta))$.
+
+Using $x\le-\log(1-x)\le x/(1-x)$ for $0\le x<1$
+and $\log(1+x)\le x$ for $x\ge0$, we obtain
+$H_{\rm b}(\delta)/\delta\ge u+1-\delta$ and
+$H_{\rm b}(p)/p\le2u+\delta^2+1$.
+For $\delta\le x\le\delta+\delta^2$, they also give
+\[
+ H_{\rm b}'(x)=\log\frac{1-x}{x}
+ \ge u-\log(1+\delta)
+       -\frac{\delta+\delta^2}{1-\delta-\delta^2}
+ \ge u-\frac73\delta>0.
+\]
+Since $\delta^2(1-\delta^2)\le p\le\delta^2$,
+integrating this derivative bound from $\delta$ to
+$\delta+p(1-2\delta)$ yields
+\[
+ \frac{H(\rho a)}{\delta}
+ \ge u+1-\delta
+   +\delta(1-\delta^2)(1-2\delta)
+      \left(u-\frac73\delta\right).
+\]
+Using $1-\rho^2=4p(1-p)$, we therefore obtain
+\[
+ \begin{aligned}
+ \frac{M_\rho(a)}{2\delta p}
+ &=2(1-p)\frac{H(\rho a)}{\delta}
+   -\left(1+\frac{2p(1-p)(1-2\delta)}{\delta}\right)
+      \frac{H_{\rm b}(p)}p\\
+ &\ge2(1-\delta^2)
+   \left[u+1-\delta
+     +\delta(1-\delta^2)(1-2\delta)
+       \left(u-\frac73\delta\right)\right] -(1+2\delta-4\delta^2)(2u+\delta^2+1)\\
+ &\ge1-(2u+4)\delta-4\delta^2,
+ \end{aligned}
+\]
+where the last inequality follows by expansion and
+$\delta\le1/9$.
+Since $u=\log(1/\delta)$ and
+$\delta\log(1/\delta)$ is increasing on $(0,1/9]$,
+the last expression is minimized at $\delta=1/9$.
+Its value there is
+$1-(2\log9+4)/9-4/81>0.017$.
+Thus $M_\rho(a)>0$.
+\end{proof}
+
+\subsection{Two-coordinate sections with the actual mean}
+
+When the largest singleton alone does not prove CK, the second
+largest can give additional information. We apply
+\eqref{jp:core-contraction} with $K=\{1,2\}$, keeping the noise on
+these two coordinates explicit. After compression, each two-dimensional
+section is one of the six functions in
+Table~\ref{tab:two-coordinate-sections}. The conditional mean below
+also retains the mean of $f$ and the interaction between the two
+coordinates. This conditioning step is the entropy form of the argument in
+\cite[proof of Theorem~6.2]{Yu2026Local}.
+
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be increasing, with $n\ge2$
+and mean $\mu$. Relabel the coordinates so that
+$\widehat f(1)\ge\widehat f(2)\ge\cdots\ge\widehat f(n)\ge0$.
+The conditional mean
+$f_{\{1,2\}}:\{-1,1\}^2\to[-1,1]$ is
+\begin{equation}\label{ub:core-mean}
+ f_{\{1,2\}}(x,y)
+ =\E[f(X)\mid X_1=x,\ X_2=y]=\mu+\widehat f(1)x+\widehat f(2)y
+       +\widehat f(\{1,2\})xy.
+\end{equation}
+
+Let $\mathrm{AND},\mathrm{OR}:\{-1,1\}^2\to\{-1,1\}$
+be defined by $\mathrm{AND}(x,y)=+1$ exactly when $(x,y)=(1,1)$,
+and $\mathrm{OR}(x,y)=-1$ exactly when $(x,y)=(-1,-1)$.
+Define $J_{\rm AND}:[0,1]\to[0,\log2]$ by
+$J_{\rm AND}(\rho)=\E H(T_\rho\mathrm{AND})$,
+where the expectation is uniform on $\{-1,1\}^2$.
+For $p_0=(1-\rho)/2$, the four conditional probabilities
+of AND being $+1$, given the noisy input, are
+$p_0^2,p_0(1-p_0),p_0(1-p_0),(1-p_0)^2$.
+Averaging their binary entropies gives
+\begin{equation}\label{eq:and-entropy}
+ J_{\rm AND}(\rho)=
+ \frac{H_{\rm b}(p_0^2)+2H_{\rm b}(p_0(1-p_0))
+       +H_{\rm b}(2p_0-p_0^2)}4,
+\end{equation}
+where we used $H_{\rm b}(t)=H_{\rm b}(1-t)$ in the last term.
+OR has the same averaged entropy, since
+$\mathrm{OR}(x,y)=-\mathrm{AND}(-x,-y)$.
+
+\begin{proposition}\label{jp:local2-exact}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be increasing, with $n\ge2$.
+For every $\rho\in[0,1]$,
+\[
+ E_\rho(f)\ge
+ \rho^2\bigl[\widehat f(1)H(\rho)
+       +\widehat f(2)[2J_{\rm AND}(\rho)-H(\rho)]\bigr]
+ +(1-\rho^2)\E H(T_\rho f_{\{1,2\}}).
+\]
+\end{proposition}
+\begin{proof}
+Write $a=\widehat f(1)$ and $b=\widehat f(2)$.
+We first show that $J_{\rm AND}(\rho)\le H(\rho)$.
+For independent Bernoulli variables $U,V$ with means $s,t$,
+put $Z=UV$. The entropy chain rule gives
+\[
+ tH_{\rm b}(s)+sH_{\rm b}(t)-H_{\rm b}(st)
+ =I(U;V\mid Z)\ge0.
+\]
+Average over the four choices of $(s,t)$ with entries
+$p_0$ and $1-p_0$.
+The average of $H_{\rm b}(st)$ is $J_{\rm AND}(\rho)$,
+whereas $H_{\rm b}(s)=H_{\rm b}(t)=H(\rho)$
+and the average of $s+t$ is $1$.
+Thus $J_{\rm AND}(\rho)\le H(\rho)$.
+
+Fixing the coordinates outside $\{1,2\}$ gives one of the
+six increasing functions in Table~\ref{tab:two-coordinate-sections}.
+\begin{table}[htbp]\centering\normalsize
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Section $h$ & Mean & Singleton 1 & Singleton 2 & Interaction
+& $\E H(T_\rho h)$\\
+\midrule
+$+1$ & $1$ & $0$ & $0$ & $0$ & $0$\\
+$-1$ & $-1$ & $0$ & $0$ & $0$ & $0$\\
+$x$ & $0$ & $1$ & $0$ & $0$ & $H(\rho)$\\
+$y$ & $0$ & $0$ & $1$ & $0$ & $H(\rho)$\\
+AND & $-1/2$ & $1/2$ & $1/2$ & $1/2$
+& $J_{\rm AND}(\rho)$\\
+OR & $1/2$ & $1/2$ & $1/2$ & $-1/2$
+& $J_{\rm AND}(\rho)$\\
+\bottomrule
+\end{tabular}
+\vspace*{3mm}
+\caption{Fourier coefficients and averaged noisy entropy of
+each increasing function $h:\{-1,1\}^2\to\{-1,1\}$.}
+\label{tab:two-coordinate-sections}
+\end{table}
+
+Let $p_x,p_y$ be the probabilities, over the uniformly chosen
+outside coordinates, that the resulting section is $x,y$,
+respectively, and let $q$ be the probability of an AND or OR section.
+Averaging the singleton coefficients in the table gives
+$a=p_x+q/2$ and $b=p_y+q/2$, so $q\le2b$.
+Since $H(\rho)-J_{\rm AND}(\rho)\ge0$, we obtain
+\[
+ \begin{aligned}
+ \E H(T_\rho^{\{1,2\}}f)
+ &=(p_x+p_y)H(\rho)+qJ_{\rm AND}(\rho)=(a+b)H(\rho)-q[H(\rho)-J_{\rm AND}(\rho)]\\
+ &\ge aH(\rho)+b[2J_{\rm AND}(\rho)-H(\rho)].
+ \end{aligned}
+\]
+Substituting this bound into \eqref{jp:core-contraction}
+with $K=\{1,2\}$ proves the proposition.
+\end{proof}
+
+Monotonicity of $f_{\{1,2\}}$ in its second coordinate gives
+$\widehat f(2)\pm\widehat f(\{1,2\})\ge0$, hence
+$|\widehat f(\{1,2\})|\le\widehat f(2)$.
+Also,
+$f_{\{1,2\}}(1,1)-f_{\{1,2\}}(-1,-1)
+=2(\widehat f(1)+\widehat f(2))\le2$,
+so $\widehat f(1)+\widehat f(2)\le1$.
+Finally, the conditional means given $X_1=\pm1$ are
+$\mu\pm\widehat f(1)\in[-1,1]$, giving
+$|\mu|\le1-\widehat f(1)$.
+
+Since $\Phi(\rho)-A_\rho(f)=E_\rho(f)+\Phi(\mu)-H(\rho)$,
+the conditional-entropy term in Proposition~\ref{jp:local2-exact}
+appears together with $\Phi(\mu)$.
+The next lemma bounds this combination using centered moments.
+We apply it with $g=T_\rho f_{\{1,2\}}$ and
+$\lambda=1-\rho^2$ on $39/40\le\rho\le49/50$,
+where $\lambda\le1/20$.
+
+\begin{lemma}[Fourth-moment mean compensation]\label{lem:mean-moments}
+Let $(\Omega,\nu)$ be a probability space and
+$g:\Omega\to[-1,1]$ a measurable function.
+Put $\mu=\E_\nu g$ and $h=g-\mu$.
+For every $\lambda\in[0,1/20]$,
+\[
+ \lambda\E_\nu H(g)+\Phi(\mu)
+ \ge\lambda\left[\log2-\frac{\E_\nu h^2}{2}
+          -(\log2-\tfrac12)\E_\nu h^4\right]
+       -\frac25\lambda^2(\E_\nu h^3)^2.
+\]
+\end{lemma}
+\begin{proof}
+Write $\kappa=\log2-\tfrac12$.
+The entropy series gives
+$H(t)\ge\log2-t^2/2-\kappa t^4$ and
+$\Phi(t)\ge t^2/2+t^4/12$ for $t\in[-1,1]$.
+Apply these bounds to $g$ and $\mu$, respectively.
+Expanding $g=\mu+h$ and using $\E_\nu h=0$ gives
+\[
+ \begin{aligned}
+ &\lambda\E_\nu H(g)+\Phi(\mu)
+   -\lambda\left[\log2-\frac{\E_\nu h^2}{2}
+                         -\kappa\E_\nu h^4\right]\\
+ &\quad\ge
+ \left[\frac{1-\lambda}{2}
+       -6\lambda\kappa\E_\nu h^2\right]\mu^2
+ -4\lambda\kappa\mu\E_\nu h^3
+ +\left(\frac1{12}-\lambda\kappa\right)\mu^4.
+ \end{aligned}
+\]
+Since $\E_\nu h^2=\operatorname{Var}_\nu(g)\le1$,
+$\kappa<1/5$, and $\lambda\le1/20$,
+the coefficient of $\mu^2$ is at least $2/5$
+and that of $\mu^4$ is nonnegative.
+Thus the last expression is at least
+\[
+ \frac25\mu^2-\frac45\lambda|\mu|\,|\E_\nu h^3|
+ =\frac25\bigl(|\mu|-\lambda|\E_\nu h^3|\bigr)^2
+   -\frac25\lambda^2(\E_\nu h^3)^2\ge-\frac25\lambda^2(\E_\nu h^3)^2. \qedhere
+\]
+\end{proof}
+
+The two-coordinate bound also contains $H(\rho)$ and
+$J_{\rm AND}(\rho)$. On the band where we use it, the following
+estimates replace these terms by expressions in $1-\rho^2$.
+
+\begin{lemma}\label{lem:and-rational}
+For $39/40\le\rho\le49/50$,
+$H(\rho)/(1-\rho^2)<17/12$ and
+$J_{\rm AND}(\rho)\ge H(\rho)-(1-\rho^2)/10$.
+\end{lemma}
+The proof is given in Appendix~\ref{app:auxiliary-estimates}.
+
+\subsection{Retaining the mean as a singleton coefficient}
+
+Information contraction handles large $|\mu|$, and the local theorem handles large $\alpha$. For the remaining functions, we need an upper bound on $W_1(f)+\mu^2$ in terms of $\alpha(f)$ and $|\mu|$.
+We first record two bounds on $W_1$ in terms of singleton
+coefficients. We then construct a balanced Boolean function whose
+singleton coefficients are $\mu,\widehat f(1),\ldots,\widehat f(n)$,
+so that its first-level weight equals $W_1(f)+\mu^2$.
+
+Define $Q_{\rm LP}:[0,1]\to\R$ by
+\begin{equation}\label{eq:yu-fourier-cap}
+ Q_{\rm LP}(a)=
+ \begin{cases}
+ a^2+1-a,&0\le a\le1/2,\\
+ a^2+2\sqrt2(1-a)^{3/2}-2(1-a)^2,&1/2\le a\le1.
+ \end{cases}
+\end{equation}
+
+\begin{lemma}[Yu's first-level bound
+{\cite[Proposition~2 and Remark~2]{Yu2023}}]\label{ext:yu-bound}
+For every $g:\{-1,1\}^n\to\{-1,1\}$ with $\E g=0$ and
+every $i\in[n]$, $W_1(g)\le Q_{\rm LP}(|\widehat g(i)|)$.
+The coordinate $i$ need not have the largest singleton coefficient.
+\end{lemma}
+Yu states the result for $0/1$-valued functions.
+Applying it to $(1+g)/2$ gives the normalization above.
+
+A second bound uses the largest singleton coefficient and
+does not require balance. We derive it from the following inequality.
+
+\begin{theorem}[K\"onig--Sch\"utt--Tomczak-Jaegermann
+{\cite[Theorem~2]{KonigSchuttTomczak1999}}]
+For independent uniform signs $X_1,\ldots,X_n$ and
+$c=(c_1,\ldots,c_n)\in\R^n$,
+\[
+ \E\left|\sum_{i=1}^n c_iX_i\right|
+ \le\sqrt{2/\pi}\,\|c\|_2
+       +(1-\sqrt{2/\pi})\|c\|_\infty.
+\]
+\end{theorem}
+
+For $g:\{-1,1\}^n\to\{-1,1\}$, define its degree-one part
+$g_1:\{-1,1\}^n\to\R$ by
+$g_1(x)=\sum_i\widehat g(i)x_i$.
+Applying the preceding theorem with $c_i=\widehat g(i)$ gives
+\[
+ W_1(g)=\E[gg_1]\le\E|g_1|
+ \le\sqrt{2/\pi}\sqrt{W_1(g)}
+      +(1-\sqrt{2/\pi})\alpha(g).
+\]
+Solving this quadratic inequality in $\sqrt{W_1(g)}$ yields
+\begin{equation}\label{ub:Khintchine}
+ W_1(g)\le K_{\rm Kh}(\alpha(g)),\qquad
+ K_{\rm Kh}(a)=
+ \frac{(1+\sqrt{1+2(\pi-\sqrt{2\pi})a})^2}{2\pi}
+ \quad \text{for } 0\le a\le 1.
+\end{equation}
+This is the sign-valued form of Yu's bound
+\cite[Proposition~3]{Yu2023}; the derivation above also
+establishes it for unbalanced functions.
+
+\begin{lemma}[Odd-lift bound]\label{ub:lift}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ have mean $\mu$, and put
+$\alpha=\max_i|\widehat f(i)|$. Then
+\[
+ W_1(f)+\mu^2
+ \le\min\bigl\{
+ K_{\rm Kh}(\max(\alpha,|\mu|)),
+ Q_{\rm LP}(\alpha),Q_{\rm LP}(|\mu|)
+ \bigr\}.
+\]
+In particular, if $\max(\alpha,|\mu|)\le69/100$, then
+\[
+ W_1(f)+\mu^2<\frac{193027}{250000}.
+\]
+\end{lemma}
+\begin{proof}
+Define $g:\{-1,1\}^{n+1}\to\{-1,1\}$, with coordinates
+indexed by $0,\ldots,n$, by
+\[
+ g(x_0,x_1,\ldots,x_n)
+ =x_0f(x_0x_1,\ldots,x_0x_n).
+\]
+Since $g(-x_0,-x_1,\ldots,-x_n)=-g(x_0,x_1,\ldots,x_n)$,
+we have $\E g=0$.
+Let $X_0,\ldots,X_n$ be independent uniform signs and put
+$Y_i=X_0X_i$ for $i\ge1$.
+The vector $Y=(Y_1,\ldots,Y_n)$ is uniform on $\{-1,1\}^n$,
+so
+\[
+ \begin{aligned}
+ \widehat g(0)&=\E[g(X)X_0]=\E f(Y)=\mu,\\
+ \widehat g(i)&=\E[g(X)X_i]
+              =\E[f(Y)Y_i]=\widehat f(i)
+              \qquad(1\le i\le n).
+ \end{aligned}
+\]
+Thus $W_1(g)=W_1(f)+\mu^2$ and
+$\alpha(g)=\max(\alpha,|\mu|)$.
+Apply Lemma~\ref{ext:yu-bound} to $g$ at coordinate $0$
+and at a coordinate $i$ with $|\widehat f(i)|=\alpha$.
+Together with \eqref{ub:Khintchine} applied to $g$,
+these give the three stated bounds.
+
+For the numerical estimate, put $s=\max(\alpha,|\mu|)$.
+The first assertion gives
+$W_1(f)+\mu^2\le\min\{K_{\rm Kh}(s),Q_{\rm LP}(s)\}$.
+Set $b_*=0.351324$.
+The function $K_{\rm Kh}$ is increasing, while $Q_{\rm LP}$
+is decreasing on $[0,1/2]$ and convex on $[1/2,69/100]$.
+Using $K_{\rm Kh}$ for $s\le b_*$ and $Q_{\rm LP}$
+for $b_*\le s\le69/100$, it therefore suffices to check
+\[
+ \max\bigl\{
+ K_{\rm Kh}(b_*),Q_{\rm LP}(b_*),
+ Q_{\rm LP}(1/2),Q_{\rm LP}(69/100)
+ \bigr\}<\frac{193027}{250000}.
+\]
+Direct substitution proves these four inequalities.
+\end{proof}
+
+\subsection{A scalar entropy inequality and a quadratic energy bound}
+
+To turn the Fourier cap into an entropy bound, we need a function of
+$|T_\rho f|$ whose expectation is controlled by low Fourier levels.
+The next lemma supplies such a quadratic expression. The case $d=2$
+uses only $W_1$ and the mean; the case $d=3$ also retains $W_2$ and
+will be used at intermediate correlations.
+
+\begin{lemma}\label{ub:degree-energy}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ have mean $\mu$,
+let $\rho\in[0,1]$, and set $g=T_\rho f$.
+Writing $W_k=W_k(f)$, for every integer $d\ge1$ we have
+\[
+ \E g^2\le \rho^d\E[fg]+(1-\rho^d)\mu^2
+   +\sum_{k=1}^{d-1}(\rho^{2k}-\rho^{d+k})W_k.
+\]
+Consequently,
+\[
+ \E[(1-|g|)(1+|g|-\rho^d)]
+ \ge (1-\rho^d)(1-\mu^2)
+   -\sum_{k=1}^{d-1}(\rho^{2k}-\rho^{d+k})W_k.
+\]
+\end{lemma}
+\begin{proof}
+By Parseval's identity,
+\[
+ \E g^2-\rho^d\E[fg]
+ =(1-\rho^d)\mu^2
+   +\sum_{k\ge1}(\rho^{2k}-\rho^{d+k})W_k.
+\]
+For $k\ge d$, the coefficient
+$\rho^{2k}-\rho^{d+k}$ is nonpositive.
+Discarding these terms proves the first inequality.
+
+Since $f$ takes values in $\{-1,1\}$, we have $fg\le|g|$.
+Expanding the product therefore gives
+\[
+\E[(1-|g|)(1+|g|-\rho^d)]=1-\rho^d+\rho^d\E|g|-\E g^2\ge1-\rho^d+\rho^d\E[fg]-\E g^2.
+\]
+The first inequality now gives the second.
+\end{proof}
+
+For $g=T_\rho f$, the case $d=2$ gives
+\begin{equation}\label{ub:quadratic-product}
+ \E[(1-|g|)(1+|g|-\rho^2)]
+ \ge(1-\rho^2)(1-\mu^2)-\rho^2(1-\rho)W_1.
+\end{equation}
+Suppose that $\max(\alpha,|\mu|)\le69/100$, so
+$W_1\le193027/250000-\mu^2$ by Lemma~\ref{ub:lift}.
+Suppose also that $c>0$ satisfies
+\begin{equation}\label{ub:quadratic-gate}
+ H(t)\ge c(1-t)(1+t-\rho^2)
+ \qquad(0\le t\le1).
+\end{equation}
+Apply this bound to $|g|$ and average.
+Since $H$ is even, \eqref{ub:quadratic-product} and the
+bound on $W_1$ give a lower bound on $E_\rho(f)$.
+Using $\Phi(\rho)-A_\rho(f)=E_\rho(f)+\Phi(\mu)-H(\rho)$,
+we obtain
+\begin{equation}\label{ub:quadratic-budget}
+\Phi(\rho)-A_\rho(f)\ge c\left[(1-\rho^2)
+       -\rho^2(1-\rho)\frac{193027}{250000}\right]-H(\rho)+\Phi(\mu)-c(1-2\rho^2+\rho^3)\mu^2.
+\end{equation}
+
+The next lemma reduces the pointwise bound
+\eqref{ub:quadratic-gate} to two scalar inequalities.
+We use $b=\rho^2$ here and $b=\rho^3$ in the
+intermediate-range argument.
+
+\begin{lemma}\label{ub:tangent}
+Let $c>0$ and $b<1$, and define $\chi:[0,1)\to\R$ by
+$\chi(t)=-2H(t)/(1-t)+2c(1+t-b)$.
+Then $\chi$ is concave.
+If some $t_0\in(0,1)$ satisfies
+\[
+ \chi(t_0)-t_0\chi'(t_0)\le0,
+ \qquad
+ \chi(t_0)+(1-t_0)\chi'(t_0)\le0,
+\]
+then $H(t)\ge c(1-t)(1+t-b)$ for every $t\in[0,1]$.
+\end{lemma}
+\begin{proof}
+For $0<p\le1/2$, put $q(p)=H_{\rm b}(p)/p$.
+We have
+\[
+ q''(p)=\frac{-p/(1-p)-2\log(1-p)}{p^3}\ge0.
+\]
+Indeed, the numerator tends to zero as $p\downarrow0$
+and has derivative $(1-2p)/(1-p)^2\ge0$.
+Thus $q$ is convex, and
+$\chi(t)=-q((1-t)/2)+2c(1+t-b)$ is concave.
+
+Let $\ell(t)=\chi(t_0)+(t-t_0)\chi'(t_0)$ be the tangent line.
+Concavity gives $\chi(t)\le\ell(t)$ for $0\le t<1$.
+The two hypotheses say that $\ell(0)\le0$ and $\ell(1)\le0$,
+so $\ell(t)\le0$ throughout $[0,1]$.
+Hence $\chi(t)\le0$ for $t<1$.
+Multiplying by $(1-t)/2$ proves the desired inequality;
+at $t=1$, both sides are zero.
+To evaluate the two scalar checks, one may use
+$\chi'(t_0)=\log(1-p_0)/(2p_0^2)+2c$,
+where $p_0=(1-t_0)/2$.
+\end{proof}
+
+\subsection{Completing the low-correlation bound}
+
+We now combine the three classes of functions: large mean, large singleton
+coefficient, and the remaining functions controlled by the Fourier cap.
+For the last class, \eqref{ub:quadratic-budget} proves CK on
+$[3/5,457/500]$, and information contraction extends the bound to zero.
+
+\begin{proposition}\label{ub:lower-interval}
+The CK inequality holds for every $\rho\in [0,457/500]$.
+\end{proposition}
+
+\begin{proof}
+If $|\mu|\ge61/100$, Corollary~\ref{ub:information-contraction}
+proves CK at every correlation.
+If $\alpha\ge69/100$, direct evaluation gives
+$M_{457/500}(69/100)>0$.
+Lemma~\ref{ub:local-propagation} and Theorem~\ref{ub:local}
+then prove CK throughout $[0,457/500]$.
+We may therefore assume
+$|\mu|<61/100$ and $\alpha<69/100$.
+Put $C=193027/250000$.
+
+First consider $3/5\le\rho\le457/500$ and set
+$c=57/(76-49\rho^2)$.
+The pointwise bound \eqref{ub:quadratic-gate} is equivalent to
+\[
+ (76-49\rho^2)H(t)
+ -57(1-t)(1+t-\rho^2)\ge0
+ \qquad(0\le t\le1).
+\]
+For each fixed $t$, the left side is affine in $\rho^2$,
+so it suffices to verify the two correlation endpoints.
+Apply Lemma~\ref{ub:tangent} with $b=\rho^2$,
+using $t_0=39/100$ at $\rho=3/5$ and
+$t_0=829/1250$ at $\rho=457/500$.
+Direct evaluation gives negative values for both tangent
+checks at each endpoint.
+Thus \eqref{ub:quadratic-gate} holds throughout the interval.
+
+Lemma~\ref{app:central-energy} gives
+\[
+ c\bigl[(1-\rho^2)-\rho^2(1-\rho)C\bigr]-H(\rho)>0.
+\]
+To control the mean term in \eqref{ub:quadratic-budget},
+observe that $c(1-2\rho^2+\rho^3)$ decreases with $\rho$.
+Indeed, its derivative has the sign of
+$-206+228\rho-49\rho^3$, which is increasing on $[0,1]$
+and equals $-27$ at $\rho=1$.
+Its value at $\rho=3/5$ therefore gives
+$c(1-2\rho^2+\rho^3)\le3534/7295<49/100$.
+Since $\Phi(\mu)\ge\mu^2/2$, we obtain
+$\Phi(\mu)-c(1-2\rho^2+\rho^3)\mu^2\ge\mu^2/100$.
+Both contributions in \eqref{ub:quadratic-budget}
+are therefore nonnegative, proving CK on $[3/5,457/500]$.
+
+At $\rho=3/5$, the same estimate gives the stronger bound
+\[
+ A_{3/5}(f)
+ \le\log2-\frac{1425}{1459}
+       \left(\frac{16}{25}-\frac{18}{125}C\right)
+ <\frac9{50}
+ =\frac{(3/5)^2}{2},
+\]
+where the strict inequality follows by direct evaluation.
+For $0\le\rho\le3/5$,
+Corollary~\ref{ub:information-contraction} now gives
+$A_\rho(f)\le(\rho/(3/5))^2A_{3/5}(f)
+\le\rho^2/2\le\Phi(\rho)$.
+\end{proof}
+
+\section{Scalar entropy inequalities and profile clocks}\label{sec:profile-clocks}
+
+The low-correlation argument retained total Fourier weights. We now
+keep the individual singleton coefficients, which record how the
+first-level dependence is distributed among coordinates. The bridge
+to entropy is an inequality on one edge: its production can be bounded
+below using only its average entropy and the half difference of its
+endpoint values. We encode that bound in a scalar function $B_e(q)$.
+Convexity will allow us to average edges in each coordinate direction,
+and then to integrate the resulting production bound.
+
+\subsection{The scalar entropy profile}
+
+On a cube edge, suppose the noisy conditional mean takes values $-t,t$,
+where $0<t<1$. The average conditional entropy is
+$[H(-t)+H(t)]/2=H(t)$, and the half-difference has magnitude $t$.
+The definition in \eqref{eq:entropy-production} gives production
+$(2t)(2\atanh t)/4=t\atanh t$.
+Writing $v=\atanh t$, we denote the ratio of entropy to half-difference
+by $F(v)$ and use its inverse to define the production profile:
+for $v,e,q>0$, put
+\begin{equation}\label{eq:entropy-profile}
+ F(v)=\frac{H(\tanh v)}{\tanh v},\qquad B_e(q)=qF^{-1}(e/q).
+\end{equation}
+The next lemma shows that $F:(0,\infty)\to(0,\infty)$ is a decreasing
+bijection, so $F^{-1}:(0,\infty)\to(0,\infty)$ is well defined.
+For fixed $e>0$, the profile $B_e:[0,\infty)\to[0,\infty)$ is a
+scalar function of the edge-size parameter $q$.
+Equivalently, choose the unique $t\in(0,1)$ satisfying $et=qH(t)$
+and set $B_e(q)=q\atanh t$, with $B_e(0)=0$ by continuity.
+For an actual centered edge this recovers its production exactly;
+Lemma~\ref{lem:edge-entropy-profile} proves that it is a lower bound
+for every edge with the prescribed entropy and half difference.
+The edge inequality and joint convexity of this profile are due to
+Chen, Gohari and Nair \cite[Lemmas~10 and~13]{ChenGohariNair2025}.
+Their Theorem~12 gives the basic inverse-profile convexity.
+We also need log-concavity of $vF(v)$ and concavity in the squared
+edge size for the clock comparisons below.
+
+\begin{lemma}[Profile convexity]\label{as:profile-convex}
+The function $F:(0,\infty)\to(0,\infty)$ is a strictly
+decreasing, strictly convex bijection.
+The function $v\mapsto vF(v)$ is strictly decreasing and
+strictly log-concave. Consequently,
+$v\mapsto1/[vF(v)^r]$ is convex for every $r\in[0,1]$.
+Moreover, $-(\log F)'(v)>1$ for $v>0$, and
+$-(\log F)'(v)>7/4$ for $v\ge4$.
+For every $v>0$, we also have
+\begin{equation}\label{rt:scaled-profile}
+ 2v+1\le e^{2v}F(v)
+ \le\frac{1+e^{-2v}}{1-e^{-2v}}(2v+1).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Put $t=\tanh v$ and $B(v)=\log(2\cosh v)$.
+Since $H(t)=B(v)-vt$, we have $F(v)=B(v)/t-v$.
+Differentiation gives
+\[
+ F'(v)=-\frac{(1-t^2)B(v)}{t^2}<0,\qquad
+ F''(v)=\frac{(1-t^2)(2B(v)-t^2)}{t^3}>0,
+\]
+where the second inequality uses $B(v)\ge\log2>1/2$.
+Also, $F(v)\to\infty$ as $v\downarrow0$ and
+$F(v)\to0$ as $v\to\infty$, proving bijectivity.
+
+To prove log-concavity, set
+$\mathcal H(v)=\cosh v\,H(\tanh v)
+=B(v)\cosh v-v\sinh v$.
+Then $\mathcal H'=B\sinh v-v\cosh v$ and
+$\mathcal H''=\mathcal H-\operatorname{sech}v$, so
+\[
+ \mathcal H\mathcal H''-(\mathcal H')^2
+ =B(v)^2-v^2-H(\tanh v).
+\]
+The derivative of the right side is $R(\tanh v)$, where
+$R(t)=2tH(t)-(1-t^2)\atanh t$.
+This function extends continuously to $[0,1]$, with
+$R(0)=R(1)=0$, and satisfies
+$R''(t)=-2\atanh t<0$ for $0<t<1$.
+Thus $R(t)>0$ in the interior.
+It follows that $B(v)^2-v^2-H(\tanh v)$ is strictly
+increasing. Its limit as $v\to\infty$ is zero, so it is
+negative for every $v>0$.
+Since $\mathcal H>0$, this proves
+$(\log\mathcal H)''<0$.
+
+The function $\mathcal H$ is positive and even, so
+$(\log\mathcal H)'(0)=0$.
+Strict log-concavity therefore gives $\mathcal H'(v)<0$
+for $v>0$. Since $F=\mathcal H/\sinh v$, we obtain
+$-F'/F=\coth v-\mathcal H'/\mathcal H>1$.
+
+Now $vF(v)=(v/\sinh v)\mathcal H(v)$, and
+$(\log(v/\sinh v))''=-1/v^2+1/\sinh^2v<0$.
+Thus $vF(v)$ is strictly log-concave.
+It also extends to a positive even function at zero,
+so the same argument shows that it is strictly decreasing.
+For $0\le r\le1$, the identity
+$\log(1/[vF(v)^r])=(r-1)\log v-r\log(vF(v))$
+expresses the logarithm as a sum of convex functions.
+Hence $1/[vF(v)^r]$ is log-convex, and therefore convex.
+
+Finally, put $x=e^{-2v}$.
+The identity
+$H(\tanh v)=\log(1+x)+2vx/(1+x)$
+and the bounds $x/(1+x)\le\log(1+x)\le x$ give
+\[
+ \frac{x(1+2v)}{1+x}
+ \le H(\tanh v)\le x(1+2v).
+\]
+Together with $\tanh v=(1-x)/(1+x)$, these inequalities
+imply \eqref{rt:scaled-profile}.
+Also, $B(v)>v$ and
+$\sinh v\cosh v=(1-x^2)/(4x)$ give
+\[
+ -\frac{F'(v)}{F(v)}
+ =\frac{B(v)}{\sinh v\cosh v\,H(\tanh v)}
+ >\frac{4v}{(1-x^2)(1+2v)}
+ >\frac{4v}{1+2v}.
+\]
+For $v\ge4$, the last expression is at least $16/9>7/4$.
+\end{proof}
+
+Two properties of $B$ serve different purposes. Joint convexity lets
+us average edge bounds; concavity in the squared edge size lets us
+bound a sum of profile terms from the total squared coefficient mass.
+
+\begin{lemma}\label{u963:scalar}
+For $e>0$ and $q\ge0$, $B_e(q)$ is strictly increasing in $q$
+and nonincreasing in $e$, with strict decrease in $e$ when $q>0$.
+For each $e>0$, the map $x\mapsto B_e(\sqrt x)$ is strictly
+increasing and strictly concave on $[0,\infty)$.
+The map $(e,q)\mapsto B_e(|q|)$ is jointly convex on
+$(0,\infty)\times\R$.
+Moreover, $B_e(cq)=cB_{e/c}(q)$ for $e,c>0$ and $q\ge0$.
+\end{lemma}
+
+\begin{proof}
+For $q>0$, recall that $B_e(q)=qF^{-1}(e/q)$.
+Since $F^{-1}$ is positive and strictly decreasing,
+this formula gives the claimed monotonicity.
+It also gives
+$B_e(cq)=cqF^{-1}(e/(cq))=cB_{e/c}(q)$.
+The assertions at $q=0$ follow from $B_e(0)=0$.
+
+To prove concavity in the squared argument, put
+\begin{equation}\label{eq:profile-elasticity}
+ \mathcal K(v)=-\frac{vF'(v)}{F(v)}.
+\end{equation}
+For $L(v)=\log(vF(v))$, Lemma~\ref{as:profile-convex}
+gives $L'<0$ and $L''\le0$.
+Hence $\mathcal K=1-vL'>1$ and
+$\mathcal K'=-L'-vL''>0$.
+
+Fix $e>0$ and parametrize $q=e/F(v)$, so that
+$B_e(q)=qv$. Setting $x=q^2$, we have
+\[
+ \frac{d}{dx}B_e(\sqrt x)
+ =\frac{vF(v)}{2e}\left(1+\frac1{\mathcal K(v)}\right).
+\]
+Both $vF(v)$ and $1+1/\mathcal K(v)$ are positive and
+strictly decreasing in $v$, whereas $x$ strictly increases.
+Thus the derivative is positive and strictly decreasing in $x$,
+proving strict increase and strict concavity for $x>0$.
+Continuity at zero extends these properties to $[0,\infty)$.
+
+Next, $F'<0<F''$ implies
+$(F^{-1})''(F(v))=-F''(v)/F'(v)^3>0$,
+so $F^{-1}$ is convex.
+For $e_1,e_2,q_1,q_2>0$ and $\theta\in[0,1]$, put
+$e_\theta=\theta e_1+(1-\theta)e_2$ and
+$q_\theta=\theta q_1+(1-\theta)q_2$.
+The ratio $e_\theta/q_\theta$ is the convex combination
+of $e_1/q_1$ and $e_2/q_2$ with weights
+$\theta q_1/q_\theta$ and $(1-\theta)q_2/q_\theta$.
+Convexity of $F^{-1}$ therefore gives
+\[
+ B_{e_\theta}(q_\theta)=q_\theta F^{-1}(e_\theta/q_\theta)\le\theta q_1F^{-1}(e_1/q_1)
+       +(1-\theta)q_2F^{-1}(e_2/q_2)=\theta B_{e_1}(q_1)+(1-\theta)B_{e_2}(q_2).
+\]
+Continuity extends this inequality to $q_1,q_2\ge0$.
+
+Finally, allow $q_1,q_2\in\R$ and retain the definitions
+of $e_\theta$ and $q_\theta$.
+The triangle inequality, monotonicity, and the preceding
+convexity give
+\[
+B_{e_\theta}(|q_\theta|)\le B_{e_\theta}\bigl(\theta|q_1|+(1-\theta)|q_2|\bigr)\le\theta B_{e_1}(|q_1|)
+       +(1-\theta)B_{e_2}(|q_2|).
+\]
+This proves joint convexity on $(0,\infty)\times\R$.
+\end{proof}
+
+\subsection{An edge inequality and entropy production}
+
+We now turn the scalar profile into a lower bound for the rate at
+which information increases with correlation.
+
+\begin{proposition}\label{prop:profile-production}
+For every nonconstant $f:\{-1,1\}^n\to\{-1,1\}$ and
+every $\rho\in(0,1)$,
+\[
+ \rho A'_\rho(f)\ge
+ \sum_{i=1}^n B_{E_\rho(f)}(\rho|\widehat f(i)|).
+\]
+\end{proposition}
+
+The proof uses the following inequality for two endpoint values.
+
+
+\begin{lemma}[Edge entropy comparison
+{\cite[Lemma~10]{ChenGohariNair2025}}]\label{lem:edge-entropy-profile}
+For $x_-,x_+\in(-1,1)$, put
+$e=[H(x_+)+H(x_-)]/2$ and $d=(x_+-x_-)/2$.
+Then
+\[
+ \frac{(x_+-x_-)(\atanh x_+-\atanh x_-)}4
+ \ge B_e(|d|).
+\]
+\end{lemma}
+
+
+
+\begin{proof}[Proof of Proposition~\ref{prop:profile-production}]
+Let $g=T_\rho f$. Since $f$ is nonconstant and $0<\rho<1$,
+we have $g:\{-1,1\}^n\to(-1,1)$.
+Fix $i\in[n]$ and $x_{-i}$, and write
+$g_\pm=g(x_1,\ldots,x_{i-1},\pm1,x_{i+1},\ldots,x_n)$.
+Define
+$e_i(x_{-i})=\frac{H(g_+)+H(g_-)}2$ and
+$q_i(x_{-i})=\frac{g_+-g_-}{2}$.
+The entropy-production identity and
+Lemma~\ref{lem:edge-entropy-profile} give
+\[
+ \rho A'_\rho(f)=D(g)=\sum_{i=1}^n\E_{X_{-i}}
+   \left[q_i\frac{\atanh g_+-\atanh g_-}{2}\right]\ge\sum_{i=1}^n\E_{X_{-i}}B_{e_i}(|q_i|).
+\]
+For each coordinate $i$, averaging the definitions yields
+\[
+ \E_{X_{-i}}e_i=\E H(g)=E_\rho(f),
+ \qquad
+ \E_{X_{-i}}q_i=\E[X_i g(X)]
+              =\widehat g(i)=\rho\widehat f(i).
+\]
+Joint convexity from Lemma~\ref{u963:scalar} and Jensen's
+inequality therefore give
+\[
+ \E_{X_{-i}}B_{e_i}(|q_i|)
+ \ge B_{\E_{X_{-i}}e_i}
+       \bigl(|\E_{X_{-i}}q_i|\bigr)
+ =B_{E_\rho(f)}(\rho|\widehat f(i)|).
+\]
+Summing over $i$ proves the proposition.
+\end{proof}
+
+\subsection{Integrating from the Boolean endpoint}
+
+We integrate the production bound from the noiseless endpoint
+$\rho=1$, where $E_1(f)=0$ for Boolean $f$. For a Boolean function
+$f$ with $W_1(f)>0$, define its singleton profile and the associated
+integral by
+\begin{equation}\label{eq:singleton-clock}
+ P_f(s)=\sum_i B_s(|\widehat f(i)|),\qquad
+ T_{P_f}(v)=\int_0^v\frac{ds}{s+P_f(s)}.
+\end{equation}
+With $\tau=-\log\rho$ and
+$y(\tau)=e^\tau E_{e^{-\tau}}(f)$, the entropy-production bound
+and the scaling identity for $B$ give
+\[
+ y'(\tau)\ge y(\tau)+P_f(y(\tau)).
+\]
+We call $T_{P_f}$ the \emph{profile clock}: its value at $v$ is
+the time needed to move from $0$ to $v$ in the scalar comparison
+equation $z'=z+P_f(z)$. The integral at zero is improper, but is
+finite when $W_1(f)>0$; we set $T_{P_f}(0)=0$. For a dictator,
+$P_f(s)=B_s(1)$, giving the reference clock for the comparisons
+below.
+
+\begin{theorem}[Profile clock]\label{thm:profile-clock}
+For every $f:\{-1,1\}^n\to\{-1,1\}$ with $W_1(f)>0$
+and every $\rho\in(0,1)$,
+\[
+ T_{P_f}\bigl(E_\rho(f)/\rho\bigr)\ge-\log\rho.
+\]
+\end{theorem}
+
+\begin{proof}
+Set $\rho=e^{-\tau}$ and
+$y(\tau)=e^\tau E_{e^{-\tau}}(f)$.
+Proposition~\ref{prop:profile-production} and the scaling
+identity in Lemma~\ref{u963:scalar} give
+$\rho A'_\rho(f)\ge
+\sum_i B_{E_\rho(f)}(\rho|\widehat f(i)|)
+=\rho P_f(y(\tau))$.
+Since $E'_\rho(f)=-A'_\rho(f)$, we obtain
+\[
+ y'(\tau)=-\rho\frac{d}{d\rho}\left(\frac{E_\rho(f)}{\rho}\right)=y(\tau)+A'_\rho(f)
+ \ge y(\tau)+P_f(y(\tau)).
+\]
+Consequently, for $\tau>0$,
+\[
+ \frac{d}{d\tau}T_{P_f}(y(\tau))
+ =\frac{y'(\tau)}{y(\tau)+P_f(y(\tau))}\ge1.
+\]
+
+It remains to justify integration from $\tau=0$.
+Since $f$ is Boolean, $E_1(f)=\E H(f)=0$,
+and continuity gives $y(\tau)\to0$ as $\tau\downarrow0$.
+Also, $W_1(f)>0$ implies $P_f(1)>0$.
+Monotonicity of $B_y(q)$ in $y$ gives
+$P_f(y)\ge P_f(1)$ for $0<y\le1$, and hence
+$0\le T_{P_f}(v)\le v/P_f(1)$ for $0\le v\le1$.
+Thus the clock is finite and continuous at zero.
+
+Integrating the derivative inequality on $[\eta,\tau]$ gives
+$T_{P_f}(y(\tau))-T_{P_f}(y(\eta))\ge\tau-\eta$.
+Letting $\eta\downarrow0$ yields
+$T_{P_f}(y(\tau))\ge\tau=-\log\rho$.
+\end{proof}
+
+More generally, fix an integer $J\ge1$, weights $c_j>0$,
+and arguments $q_j\in(0,1]$, and define
+\begin{equation}\label{eq:fixed-profile-envelope}
+ Q(y)=\sum_{j=1}^J c_jB_y(q_j),
+ \qquad
+ T_Q(v)=\int_0^v\frac{dy}{y+Q(y)}.
+\end{equation}
+Here $Q:(0,\infty)\to(0,\infty)$.
+As above, $Q(y)\ge Q(1)>0$ for $0<y\le1$, so the
+improper integral defining $T_Q$ is finite at zero.
+Thus $T_Q:[0,\infty)\to[0,\infty)$ is continuous and
+strictly increasing, with $T_Q(0)=0$.
+
+The parameters $c_j,q_j$ remain fixed as $\rho$ varies.
+They may be chosen using prescribed intervals for the function's
+largest singleton coefficients. We call the class of increasing
+functions satisfying a fixed collection of such interval bounds
+a \emph{coefficient cell}.
+
+If $Q(y)\le P_f(y)$ for every $y>0$, then
+$T_{P_f}(v)\le T_Q(v)$ for every $v\ge0$.
+The profile-clock theorem therefore gives
+\[
+ T_Q\bigl(E_\rho(f)/\rho\bigr)\ge-\log\rho
+ \qquad(0<\rho<1).
+\]
+
+\subsection{Propagation of an integrated entropy bound}
+
+To prove $E_\rho(f)\ge H(\rho)$, it suffices to show that $T_Q$
+reaches the dictator's entropy level $H(\rho)/\rho$ by time
+$\log(1/\rho)$: the true entropy cannot reach a smaller level by
+Theorem~\ref{thm:profile-clock}. The next theorem propagates this
+comparison from one correlation to every larger one, provided $Q$
+stays fixed.
+
+\begin{theorem}[Propagation to larger correlations]
+\label{thm:clock-propagation}\label{st:clock}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ satisfy $W_1(f)>0$,
+and let $Q$ have the fixed finite-sum form
+\eqref{eq:fixed-profile-envelope}, with $Q\le P_f$ on $(0,\infty)$.
+Fix $0<\rho_0<1$ and $\epsilon\in[0,1)$, and suppose that
+\[
+ T_Q\bigl(H(\rho_0)/\rho_0\bigr)
+ \le(1-\epsilon)\log(1/\rho_0).
+\]
+Then, for every $\rho\in[\rho_0,1)$,
+\[
+ T_Q\bigl(H(\rho)/\rho\bigr)
+ \le(1-\epsilon)\log(1/\rho),
+ \qquad
+ E_\rho(f)\ge H(\rho)\rho^{-\epsilon}.
+\]
+In particular, taking $\epsilon=0$ gives
+$E_\rho(f)\ge H(\rho)$, and hence the CK inequality,
+for every $\rho\in[\rho_0,1]$.
+\end{theorem}
+
+The parameter $\epsilon$ records the fractional margin in the
+assumed clock inequality; $\epsilon=0$ already suffices for CK.
+To prove propagation, we compare each term of $Q$ with the
+dictator profile $y\mapsto B_y(1)$.
+Writing $y=F(u)$ gives
+$B_y(a)/B_y(1)=aF^{-1}(F(u)/a)/u$.
+The next lemma shows that this ratio is nonincreasing in $y$,
+since $F$ is decreasing.
+
+\begin{lemma}\label{lem:profile-ratio}
+For $0<a<1$, the function
+$u\mapsto F^{-1}(F(u)/a)/u$ is strictly increasing on $(0,\infty)$.
+For $a=1$ it equals one.
+\end{lemma}
+
+\begin{proof}
+Fix $0<a<1$ and put $v(u)=F^{-1}(F(u)/a)$.
+Since $F$ is strictly decreasing, $0<v(u)<u$.
+The function $\mathcal K$ in \eqref{eq:profile-elasticity}
+is positive and strictly increasing by the proof of
+Lemma~\ref{u963:scalar}.
+Differentiating $F(v(u))=F(u)/a$ gives
+\[
+ \frac{d}{du}\log\frac{v(u)}u
+ =\frac1u\left(\frac{\mathcal K(u)}{\mathcal K(v(u))}-1\right)>0.
+\]
+The case $a=1$ is immediate.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:clock-propagation}]
+Let
+$T_{\rm dic}(v)=\int_0^v [y+B_y(1)]^{-1}\,dy$
+be the clock of the dictator profile.
+Under the substitution $y=H(t)/t=F(\atanh t)$,
+we have $B_y(1)=\atanh t$ and
+$dy/[y+B_y(1)]=-dt/t$.
+Since $H(t)/t\to0$ as $t\uparrow1$, this gives
+\[
+ T_{\rm dic}\bigl(H(\rho)/\rho\bigr)=\log(1/\rho).
+\]
+
+For $y>0$, put
+$R(y)=Q(y)/B_y(1)$ and $x(y)=y/B_y(1)$.
+Lemma~\ref{lem:profile-ratio}, applied to each fixed term of $Q$,
+shows that $R$ is nonincreasing.
+Also, $x$ is strictly increasing:
+writing $y=F(v)$ gives $x(y)=F(v)/v$, which decreases with $v$,
+as does $y$.
+
+Define
+$\Delta(y)=T_Q(y)-(1-\epsilon)T_{\rm dic}(y)$.
+Both clocks are continuous at zero, so $\Delta(0)=0$.
+For $y>0$,
+\[
+ \Delta'(y)
+ =T'_{\rm dic}(y)
+   \frac{\epsilon x(y)+1-(1-\epsilon)R(y)}
+        {x(y)+R(y)}.
+\]
+The numerator is nondecreasing, because $x$ increases,
+$R$ is nonincreasing, and $0\le\epsilon<1$.
+Thus $\Delta'$ can change sign only from negative to positive.
+Consequently, on any interval $[0,y_0]$, the maximum of
+$\Delta$ is attained at an endpoint.
+
+Take $y_0=H(\rho_0)/\rho_0$.
+The hypothesis gives $\Delta(y_0)\le0$, and hence
+\[
+ \Delta(y)\le\max\{\Delta(0),\Delta(y_0)\}\le0
+ \qquad(0\le y\le y_0).
+\]
+Since $H(\rho)/\rho=F(\atanh\rho)$ decreases with $\rho$,
+this proves the asserted clock bound for $\rho\ge\rho_0$.
+
+The profile-clock theorem and $Q\le P_f$ give
+$T_Q(E_\rho(f)/\rho)\ge\log(1/\rho)$.
+Together with the clock bound and strict increase of $T_Q$,
+this implies $E_\rho(f)\ge H(\rho)$.
+Subtracting the two clock inequalities now yields
+\[
+ \epsilon\log(1/\rho)
+ \le
+ \int_{H(\rho)/\rho}^{E_\rho(f)/\rho}
+       \frac{dy}{y+Q(y)}
+ \le
+ \log\frac{E_\rho(f)}{H(\rho)}.
+\]
+Exponentiation gives
+$E_\rho(f)\ge H(\rho)\rho^{-\epsilon}$.
+Finally, $E_1(f)=H(1)=0$, which covers the endpoint
+in the last assertion.
+\end{proof}
+
+\subsection{Profiles controlled by one or two coordinates}
+
+The clock still depends on every singleton coefficient. We want a
+lower bound for $P_f$ knowing only one or two of them and a lower
+bound for $W_1$. The other coefficients have an upper bound, or cap.
+Concavity in their squares shows that the smallest allowed profile
+sum is obtained by filling this cap repeatedly, with at most one
+smaller residual term.
+This is the usual extreme-point argument for capped squared
+coefficients; a related use appears in
+\cite[proof of Theorem~2]{JavanmardWoodruff2026}.
+We write $r_+=\max(r,0)$ for the positive part of a real number.
+
+\begin{lemma}\label{jp:profile}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be increasing, with coordinates
+ordered so that
+$\widehat f(1)\ge\cdots\ge\widehat f(n)\ge0$.
+Suppose $\widehat f(1)\in[a,A]$, where $0\le a\le A\le1$,
+and $W_1(f)\ge w$.
+Set $c_1=\min(A,1-a)$.
+If $c_1>0$, write
+$(w-A^2)_+=k_1c_1^2+v_1$, where
+$k_1\in\mathbb Z_{\ge0}$ and $0\le v_1<c_1^2$.
+Then, for every $y>0$,
+\[
+ P_f(y)\ge B_y(a)+k_1B_y(c_1)+B_y(\sqrt{v_1}).
+\]
+If $c_1=0$, the bound holds with the two tail terms omitted.
+
+If, in addition, $n\ge2$ and $\widehat f(2)\in[s,S]$,
+where $0\le s\le S\le1$ and $S>0$, write
+$(w-A^2-S^2)_+=k_2S^2+v_2$, where
+$k_2\in\mathbb Z_{\ge0}$ and $0\le v_2<S^2$.
+Then, for every $y>0$,
+\[
+ P_f(y)\ge B_y(a)+B_y(s)+k_2B_y(S)+B_y(\sqrt{v_2}).
+\]
+Summands with zero argument are omitted.
+\end{lemma}
+
+\begin{proof}
+Fix $y>0$ and put $b(v)=B_y(\sqrt v)$.
+By Lemma~\ref{u963:scalar}, $b$ is increasing and concave,
+with $b(0)=0$.
+
+Ordering and the pair bound \eqref{eq:pair-bound} give
+$\widehat f(i)\le\min\{\widehat f(1),1-\widehat f(1)\}
+\le c_1$ for $i\ge2$.
+Moreover,
+\[
+ \sum_{i\ge2}\widehat f(i)^2
+ =W_1(f)-\widehat f(1)^2
+ \ge(w-A^2)_+.
+\]
+Suppose first that $c_1>0$.
+Choose auxiliary numbers $u_i\in[0,\widehat f(i)^2]$,
+$i\ge2$, whose sum is $(w-A^2)_+$.
+Since $b$ is increasing,
+$\sum_{i\ge2}B_y(\widehat f(i))\ge\sum_{i\ge2}b(u_i)$.
+
+If two of these numbers satisfy $0<u\le v<c_1^2$, set
+$t=\min\{u,c_1^2-v\}$ and replace them by $u-t$ and $v+t$.
+This preserves their sum, and concavity gives
+\[
+ b(u-t)+b(v+t)\le b(u)+b(v).
+\]
+Each replacement makes at least one of the two numbers equal
+to $0$ or $c_1^2$.
+After finitely many replacements, all but at most one of the
+numbers lie in $\{0,c_1^2\}$.
+Their prescribed sum then forces $k_1$ entries to equal $c_1^2$
+and, if $v_1>0$, one entry to equal $v_1$.
+Adding $B_y(\widehat f(1))\ge B_y(a)$ proves the first bound.
+If $c_1=0$, every coefficient with index at least two is zero,
+so only this retained term is needed.
+
+For the second bound, retain the first two coefficients.
+Ordering gives $\widehat f(i)\le S$ for $i\ge3$, and
+\[
+ \sum_{i\ge3}\widehat f(i)^2
+ =W_1(f)-\widehat f(1)^2-\widehat f(2)^2
+ \ge(w-A^2-S^2)_+.
+\]
+Apply the same redistribution with squared cap $S^2$,
+then add
+$B_y(\widehat f(1))+B_y(\widehat f(2))
+\ge B_y(a)+B_y(s)$.
+\end{proof}
+
+The redistributed squares are auxiliary variables and need not
+be realizable as the squared Fourier coefficients of a Boolean
+function. The resulting lower bound depends only on the interval
+endpoints and $w$.
+
+When the squared arguments of a profile depend affinely on
+parameters, the next lemma shows that its clock is convex in
+those parameters. An upper bound on the clock over a polytope
+therefore reduces to its vertices.
+
+\begin{lemma}[Convexity of the clock]\label{lem:source-convexity}
+Let $K\subset\R^d$ be a nonempty polytope, and let
+$\ell_1,\ldots,\ell_m:K\to[0,\infty)$ be affine functions
+such that $\sum_j\ell_j(x)>0$ for every $x\in K$.
+For fixed weights $c_1,\ldots,c_m>0$, define
+$Q_x(y)=\sum_jc_jB_y(\sqrt{\ell_j(x)})$ for $x\in K$ and $y>0$.
+For every $Y>0$, the function
+\[
+ x\longmapsto T_{Q_x}(Y)
+ =\int_0^Y\frac{dy}{y+Q_x(y)}
+\]
+is convex on $K$ and attains its maximum at a vertex.
+\end{lemma}
+
+\begin{proof}
+For each fixed $y>0$, Lemma~\ref{u963:scalar} shows that
+$Q_x(y)$ is concave in $x$.
+Since the reciprocal is convex and decreasing on $(0,\infty)$,
+$x\mapsto1/(y+Q_x(y))$ is convex.
+The integral is finite: monotonicity in $y$ gives
+$Q_x(y)\ge Q_x(Y)>0$ for $0<y\le Y$.
+Integration therefore proves convexity of $T_{Q_x}(Y)$.
+
+If $x=\sum_r\theta_r v_r$ is a convex combination of vertices
+of $K$, then
+\[
+ T_{Q_x}(Y)
+ \le\sum_r\theta_r T_{Q_{v_r}}(Y)
+ \le\max_r T_{Q_{v_r}}(Y).
+\]
+Thus a vertex attains the maximum.
+\end{proof}
+
+The cap on the squared coefficients may itself depend on a
+parameter. The next lemma proves concavity of the packed
+contribution on an interval where the number $k$ of entries
+at the cap is fixed. Here $c$ denotes the squared cap and
+$w$ the total squared mass; we will use $b(s)=B_y(\sqrt s)$.
+
+\begin{lemma}[Concavity with a varying cap]\label{lem:moving-cap}
+Let $b:[0,\infty)\to\R$ be continuous and concave, and twice
+continuously differentiable on $(0,\infty)$.
+On an interval $I$, let $c:I\to(0,\infty)$ be convex and twice
+continuously differentiable, and let $w:I\to\R$ be affine.
+Fix $k\ge0$ and suppose that $0\le w-kc\le c$ on $I$.
+Then the function
+$x\mapsto kb(c(x))+b(w(x)-kc(x))$ is concave on $I$.
+\end{lemma}
+
+\begin{proof}
+If $k=0$, the assertion follows from concavity of $b$ and
+affineness of $w$. Suppose that $k>0$, and put $v=w-kc$.
+Where $v>0$, differentiation gives
+\[
+ \frac{d^2}{dx^2}\bigl[kb(c)+b(v)\bigr]
+ =kb''(c)(c')^2+b''(v)(v')^2
+   +kc''\bigl(b'(c)-b'(v)\bigr)\le0.
+\]
+Indeed, $b''\le0$, $c''\ge0$, and $v\le c$ implies
+$b'(c)\le b'(v)$.
+
+The function $v$ is concave and nonnegative.
+If it vanishes at an interior point of $I$, it must vanish
+identically. In that case $c=w/k$ is affine, so
+$kb(c)+b(0)$ is concave.
+Otherwise $v>0$ throughout the interior, and continuity
+extends the concavity just proved to any included endpoints.
+\end{proof}
+
+\section{Entropy and energy at intermediate correlations}
+\label{sec:cover}
+
+This section covers $457/500\le\rho\le49/50$.
+The local bounds from Section~\ref{ub:lower} handle a sufficiently
+large first coefficient, or a suitable pair of large coefficients.
+For the remaining functions, we split
+according to the first-level energy $W_1$. If it is small, Harris's
+inequality controls $W_2$ and a cubic energy bound proves CK.
+If it is large, the integrated entropy bound proves the stronger
+inequality $E_\rho(f)\ge H(\rho)$. The certificate assigns each
+coefficient cell to one of these arguments and checks that the cells
+cover every function.
+
+\subsection{Conditional Harris inequalities without balance}
+
+Harris association bounds $W_2$ in terms of $W_1$ and one or two
+retained coefficients. These are the constraints on $f$ needed by
+the cubic energy bound in the next subsection.
+
+\begin{theorem}[Harris inequality {\cite{Harris1960}}]
+Let $X_1,\ldots,X_n$ be independent signs, with arbitrary
+individual biases. For increasing functions
+$f,g:\{-1,1\}^n\to\R$,
+$\Cov(f(X),g(X))\ge0$.
+\end{theorem}
+
+We apply this theorem to the increasing function obtained by
+compression, with $X$ uniform on $\{-1,1\}^n$.
+To obtain an upper bound on $W_2$, we pair $f$ with its dual
+$f^{\rm d}:\{-1,1\}^n\to\{-1,1\}$, defined by
+$f^{\rm d}(x)=-f(-x)$.
+The dual is increasing and satisfies
+$\widehat{f^{\rm d}}(S)=(-1)^{|S|+1}\widehat f(S)$.
+Thus the degree-two contribution to
+$\Cov(f(X),(T_\eta f^{\rm d})(X))$ is $-\eta^2W_2$.
+
+For $0\le\eta\le1$, the function $T_\eta f^{\rm d}$ is increasing.
+Indeed, its noisy input has independent coordinates with
+$\Pr(Y_i=1\mid X=x)=(1+\eta x_i)/2$; coupling these coordinates
+using the same uniform random variables preserves their order.
+
+Fix $K\subseteq[n]$ and put
+$U=f(X)$ and $V=(T_\eta f^{\rm d})(X)$.
+Conditional on $X_K$, the remaining coordinates are still
+independent, and both functions are increasing in those coordinates.
+Harris's inequality therefore gives $\Cov(U,V\mid X_K)\ge0$.
+By the law of total covariance,
+\[
+ \Cov(U,V)
+ \ge \Cov\bigl(\E[U\mid X_K],\E[V\mid X_K]\bigr).
+\]
+Conditional expectation retains exactly the Fourier terms
+supported in $K$. Expanding the two covariances gives
+\begin{equation}\label{jp:core-harris}
+ \sum_{S\ne\varnothing}
+   (-1)^{|S|+1}\eta^{|S|}\widehat f(S)^2
+ \ge
+ \sum_{\varnothing\ne S\subseteq K}
+   (-1)^{|S|+1}\eta^{|S|}\widehat f(S)^2.
+\end{equation}
+The constant term is absent because each covariance subtracts
+the product of the means, $\mu(-\mu)=-\mu^2$.
+
+\begin{proposition}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be increasing, with $\mu=\E f$.
+For every $0<\eta\le1$,
+\[
+ \eta(1+\eta)W_2
+ \le(1-\eta^2)W_1+\eta^2(1-\mu^2)-\widehat f(1)^2.
+\]
+If $n\ge2$, then also
+\begin{align*}
+ \eta(1+\eta)W_2
+ &\le(1-\eta^2)W_1+\eta^2(1-\mu^2)
+     -\widehat f(1)^2-\widehat f(2)^2
+     +\eta\widehat f(\{1,2\})^2\\
+ &\le(1-\eta^2)W_1+\eta^2
+     -\widehat f(1)^2-(1-\eta)\widehat f(2)^2.
+\end{align*}
+\end{proposition}
+
+\begin{proof}
+For every $k\ge3$,
+$(-1)^{k+1}\eta^k\le\eta^3$.
+Using Parseval's identity, we therefore obtain
+\[
+ \begin{aligned}
+ \sum_{S\ne\varnothing}
+   (-1)^{|S|+1}\eta^{|S|}\widehat f(S)^2
+ &\le \eta W_1-\eta^2W_2
+       +\eta^3(1-\mu^2-W_1-W_2)\\
+ &=\eta\bigl[(1-\eta^2)W_1
+       -\eta(1+\eta)W_2+\eta^2(1-\mu^2)\bigr].
+ \end{aligned}
+\]
+For $K=\{1\}$, the right side of \eqref{jp:core-harris}
+is $\eta\widehat f(1)^2$.
+For $K=\{1,2\}$, it is
+$\eta[\widehat f(1)^2+\widehat f(2)^2]
+-\eta^2\widehat f(\{1,2\})^2$.
+Combining each expression with the displayed upper bound,
+dividing by $\eta$, and rearranging proves the first two inequalities.
+
+Finally, monotonicity of $f_{\{1,2\}}$ gives
+$\widehat f(2)\pm\widehat f(\{1,2\})\ge0$,
+and hence $|\widehat f(\{1,2\})|\le\widehat f(2)$.
+Substituting this bound and dropping the nonpositive term
+$-\eta^2\mu^2$ proves the last inequality.
+\end{proof}
+
+\subsection{A cubic energy bound}
+
+We now derive a sufficient condition for CK in terms of the first
+two Fourier levels. For $0<\rho<1$, define
+\begin{equation}\label{eq:cubic-weight}
+ \mathcal W_\rho=W_1+\frac{\rho^2}{1+\rho}W_2.
+\end{equation}
+Put $g=T_\rho f:\{-1,1\}^n\to[-1,1]$.
+Taking $d=3$ in Lemma~\ref{ub:degree-energy} and factoring
+$1-\rho$ gives
+\begin{equation}\label{ub:cubic-product}
+ \E[(1-|g|)(1+|g|-\rho^3)]
+ \ge(1-\rho)\bigl[(1+\rho+\rho^2)(1-\mu^2)-\rho^2(1+\rho)\mathcal W_\rho\bigr].
+\end{equation}
+
+For a proposed upper bound $M$ on $\mathcal W_\rho$, define
+\begin{equation}\label{eq:cubic-parameters}
+ C_\rho=1+\rho+\rho^2-\rho^2(1+\rho)M,
+ \qquad
+ \kappa_\rho=\frac{H(\rho)}{(1-\rho)C_\rho}.
+\end{equation}
+Assume $C_\rho>0$ and
+\begin{equation}\label{ub:cubic-gates}
+ H(t)\ge\kappa_\rho(1-t)(1+t-\rho^3)
+ \quad \text{for } 0\le t\le1, \qquad
+ \kappa_\rho(1-\rho^3)<1/2.
+\end{equation}
+If $\mathcal W_\rho\le M$, apply the first inequality to $|g|$
+and use \eqref{ub:cubic-product}. Since $H$ is even, this gives
+\[
+ E_\rho(f)=\E H(|g|)\ge\kappa_\rho(1-\rho)
+       \bigl[C_\rho-(1+\rho+\rho^2)\mu^2\bigr]=H(\rho)-\kappa_\rho(1-\rho^3)\mu^2.
+\]
+The choice of $\kappa_\rho$ makes the constant term exactly
+$H(\rho)$. The remaining loss is absorbed by
+$\Phi(\mu)\ge\mu^2/2$:
+\begin{equation}\label{ub:cubic-bias}
+ \Phi(\rho)-A_\rho(f)
+ =E_\rho(f)-H(\rho)+\Phi(\mu)\ge\Phi(\mu)-\kappa_\rho(1-\rho^3)\mu^2
+ \ge0.
+\end{equation}
+Thus \eqref{ub:cubic-gates} and $\mathcal W_\rho\le M$
+imply CK.
+
+The first condition in \eqref{ub:cubic-gates} can be checked
+using Lemma~\ref{ub:tangent}, with $c=\kappa_\rho$ and $b=\rho^3$.
+The next lemma reduces this check over a correlation interval
+to its two endpoints and supplies the second condition uniformly.
+
+\begin{lemma}[Endpoint propagation]\label{ub:cubic-endpoints}
+Let $3/4\le M\le83/100$ and
+$457/500\le\rho_-<\rho_+<1$, and define $C_\rho$ and
+$\kappa_\rho$ by \eqref{eq:cubic-parameters}.
+Throughout $457/500\le\rho<1$, we have
+$C_\rho>0$ and
+$\kappa_\rho(1-\rho^3)<30/67<1/2$.
+Moreover, if
+\[
+ H(t)\ge\kappa_\rho(1-t)(1+t-\rho^3)
+ \qquad(0\le t\le1)
+\]
+holds at both $\rho=\rho_-$ and $\rho=\rho_+$,
+then it holds for every $\rho\in[\rho_-,\rho_+]$.
+\end{lemma}
+
+The proof is given in Appendix~\ref{app:auxiliary-estimates}.
+
+\subsection{Combining the entropy and energy bounds}
+
+We split each coefficient cell according to $W_1(f)$.
+For $W_1(f)\le w$, a Harris or Parseval bound will imply
+$\mathcal W_\rho\le M$, allowing us to apply the cubic energy bound.
+For $W_1(f)\ge w$, a lower bound on the singleton profile $P_f$
+will give $E_\rho(f)\ge H(\rho)$ through the profile clock.
+
+Fix $0<\rho_-<\rho_+<1$ and put
+$\beta_+=\rho_+^2/(1+\rho_+)$.
+Consider a coefficient cell with
+$a=\widehat f(1)\in[a_0,A]$ and
+$b=\widehat f(2)\in[b_0,B]$.
+For $0<\eta\le1$, the two-coordinate Harris bound shows that
+$W_1\le w$ implies
+\[
+ W_2\le
+ \frac{(1-\eta^2)w+\eta^2-a_0^2-(1-\eta)b_0^2}
+      {\eta(1+\eta)}.
+\]
+Since $\rho^2/(1+\rho)$ increases with $\rho$,
+$\mathcal W_\rho\le W_1+\beta_+W_2$ throughout the band.
+Thus it suffices to choose $w,\eta$ such that
+\begin{equation}\label{ub:threshold}
+ w+\beta_+
+ \frac{(1-\eta^2)w+\eta^2-a_0^2-(1-\eta)b_0^2}
+      {\eta(1+\eta)}\le M.
+\end{equation}
+For a one-coordinate cell, omit the term involving $b_0$.
+If the displayed upper bound on $W_2$ is negative, no function
+in the cell can satisfy $W_1\le w$.
+
+Alternatively, Parseval gives $W_2\le1-W_1$, and hence
+$\mathcal W_\rho\le\beta_++(1-\beta_+)W_1$.
+Since $\beta_+<1$, the condition
+\begin{equation}\label{ub:parseval-threshold}
+ \beta_++(1-\beta_+)w\le M
+\end{equation}
+also ensures $\mathcal W_\rho\le M$ whenever $W_1\le w$.
+
+For functions with $W_1\ge w$, use Lemma~\ref{jp:profile}
+to obtain a fixed finite-sum envelope $Q$ satisfying
+$Q(y)\le P_f(y)$ for every $y>0$.
+If
+\begin{equation}\label{ub:clock-trigger}
+ T_Q\bigl(H(\rho_-)/\rho_-\bigr)<\log(1/\rho_-),
+\end{equation}
+Theorem~\ref{thm:clock-propagation} gives
+$E_\rho(f)\ge H(\rho)$ for every $\rho\in[\rho_-,1]$.
+Since $H(\mu)\le\log2$, this implies CK for every mean.
+The two cases include their common boundary $W_1=w$.
+
+The following lemma records the resulting criterion.
+
+\begin{lemma}\label{ub:cell-dichotomy}
+Fix a correlation band $[\rho_-,\rho_+]\subset(0,1)$,
+a coefficient cell, and a constant $M$.
+Suppose $C_\rho>0$ and \eqref{ub:cubic-gates} hold throughout
+the band.
+Assume that for every function $f$ in the cell there is a
+threshold $w$ with the following properties:
+\begin{enumerate}[label=(\alph*)]
+ \item If $W_1(f)\le w$, then \eqref{ub:threshold} or
+       \eqref{ub:parseval-threshold} gives
+       $\mathcal W_\rho\le M$ throughout the band.
+ \item If $W_1(f)\ge w$, there is an envelope $Q$ of the form
+       \eqref{eq:fixed-profile-envelope}, with parameters
+       independent of $\rho$, such that
+       $Q(y)\le P_f(y)$ for every $y>0$ and
+       \eqref{ub:clock-trigger} holds.
+\end{enumerate}
+Then CK holds for every function in the cell throughout the band.
+\end{lemma}
+
+\begin{proof}
+If $W_1(f)\le w$, apply \eqref{ub:cubic-bias}.
+Otherwise, condition~(b) applies.
+Since $Q>0$ and $Q\le P_f$, we have $W_1(f)>0$,
+so Theorem~\ref{thm:clock-propagation} gives
+$E_\rho(f)\ge H(\rho)$ and hence CK.
+\end{proof}
+
+It remains to bound the clock integral in
+\eqref{ub:clock-trigger}.
+For fixed $q>0$, the function $e\mapsto B_e(q)$ is convex
+by Lemma~\ref{u963:scalar}.
+Its tangent lines give affine lower bounds on the denominator
+of the clock integrand, whose reciprocals can be integrated
+explicitly.
+
+\begin{lemma}[Supporting-line integration]\label{lem:clock-tangent}
+For every $e,q,v>0$,
+\[
+ B_e(q)\ge
+ qv+(qF(v)-e)\frac{\sinh^2v}{\log(2\cosh v)}.
+\]
+Let $Q(e)=\sum_{j=1}^m c_jB_e(q_j)$, where $c_j,q_j>0$.
+Choose $v_j>0$, let $L_j(e)$ be the affine expression on the
+right with $(q,v)=(q_j,v_j)$, and put
+$\ell(e)=e+\sum_jc_jL_j(e)$.
+Suppose $0\le e_-<e_+$ and $\ell(e_-),\ell(e_+)>0$.
+We have
+\[
+ \int_{e_-}^{e_+}\frac{de}{e+Q(e)}
+ \le
+ \begin{cases}
+ \displaystyle
+ \frac{1}{\ell'}\log\frac{\ell(e_+)}{\ell(e_-)},& \ell'\ne0,\\[6pt]
+ \displaystyle
+ \frac{e_+-e_-}{\ell(e_-)},&\ell'=0.
+ \end{cases}
+\]
+When $e_-=0$, the integral is improper.
+\end{lemma}
+
+\begin{proof}
+Fix $q,v>0$ and put $e_*=qF(v)$.
+From $B_e(q)=qF^{-1}(e/q)$, we obtain
+\[
+ B_{e_*}(q)=qv,\qquad
+ \left.\frac{d}{de}B_e(q)\right|_{e=e_*}
+ =\frac1{F'(v)}
+ =-\frac{\sinh^2v}{\log(2\cosh v)}.
+\]
+The first inequality is therefore the tangent-line bound
+for the convex function $e\mapsto B_e(q)$.
+
+Summing these bounds gives $e+Q(e)\ge\ell(e)$.
+Because $\ell$ is affine and positive at both endpoints,
+it is positive throughout $[e_-,e_+]$.
+Hence
+\[
+ \int_{e_-}^{e_+}\frac{de}{e+Q(e)}
+ \le
+ \int_{e_-}^{e_+}
+       \frac{de}{\ell(e_-)+(e-e_-)\ell'}.
+\]
+Evaluating the last integral gives the stated formula.
+If $e_-=0$, first integrate from $\varepsilon>0$ and let
+$\varepsilon\downarrow0$.
+Positivity of $\ell$ on the closed interval makes the upper
+integral finite and justifies this limit.
+\end{proof}
+
+To check \eqref{ub:clock-trigger}, choose
+$Y>H(\rho_-)/\rho_-$ and partition $[0,Y]$.
+On each subinterval, choose tangent parameters $v_j>0$
+so that the resulting affine denominator $\ell$ is positive
+at both endpoints.
+Summing the bounds from Lemma~\ref{lem:clock-tangent}
+gives an upper bound on $T_Q(Y)$.
+If this sum is less than $\log(1/\rho_-)$, then
+\eqref{ub:clock-trigger} follows because $T_Q$ is increasing.
+
+One may choose $v_j=\atanh t_j$ with $0<t_j<1$;
+then $F(v_j)=H(t_j)/t_j$, so evaluating the bounds requires
+no inversion of $F$.
+The tangent parameters may vary between subintervals,
+while the weights and arguments defining $Q$ remain fixed.
+
+\subsection{Four one-coordinate bands}
+
+We apply Lemma~\ref{ub:cell-dichotomy} using only the largest
+singleton coefficient. The energy threshold and profile retain
+its value, and convexity reduces the required clock bounds to
+finitely many endpoint checks.
+
+\begin{theorem}\label{ub:upper-middle}
+The CK inequality holds for every
+$\rho\in[457/500,39/40]$.
+\end{theorem}
+
+\begin{proof}
+By compression, it suffices to consider an increasing function $f$.
+Order its singleton coefficients and put
+$a=\widehat f(1)=\max_i\widehat f(i)$.
+Use the following parameters:
+\begin{center}\normalsize
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Band & $M$ & $A_*$ & Clock checks\\
+\midrule
+$[.914,.95]$ & $.82523844$ & $.66996$ & 7\\
+$[.95,.97]$ & $.787706016$ & $.72245$ & 5\\
+$[.97,.974]$ & $.77592593$ & $.73625$ & 4\\
+$[.974,.975]$ & $.772609873$ & $.73996$ & 4\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For each band $[\rho_-,\rho_+]$, direct evaluation gives
+$M_{\rho_+}(A_*)>0$.
+Lemma~\ref{ub:local-propagation} and Theorem~\ref{ub:local}
+therefore prove CK throughout the band whenever $a\ge A_*$.
+It remains to consider $a\le A_*$.
+
+Put $\beta_+=\rho_+^2/(1+\rho_+)$.
+Parseval and the one-coordinate Harris bound with $\eta=1$
+give, respectively,
+\[
+ \mathcal W_\rho\le\beta_++(1-\beta_+)W_1,
+ \qquad
+ \mathcal W_\rho\le W_1+\frac{\beta_+}{2}(1-a^2)
+\]
+throughout the band.
+Thus $\mathcal W_\rho\le M$ whenever $W_1\le w(a)$, where
+\[
+ w(a)=\max\left\{
+       \frac{M-\beta_+}{1-\beta_+},
+       M-\frac{\beta_+}{2}(1-a^2)
+       \right\}.
+\]
+Indeed, the two entries are the thresholds supplied by the
+Parseval and Harris bounds, so it suffices that either applies.
+
+Now suppose $W_1\ge w(a)$.
+If $a\le2/5$, every squared singleton coefficient is at most
+$4/25$.
+Concavity of $s\mapsto B_y(\sqrt s)$ and $B_y(0)=0$ give
+$B_y(\sqrt s)\ge(25s/4)B_y(2/5)$ on this interval.
+Summing over the coefficients yields the common envelope
+\[
+ P_f(y)\ge\frac{25W_1}{4}B_y(2/5)
+ \ge\frac{25w(0)}4B_y(2/5),
+\]
+where we used $w(a)\ge w(0)$.
+
+For $2/5\le a\le A_*$, ordering and the pair bound give
+$\widehat f(i)\le C:=\min(a,1-a)$ for $i\ge2$.
+Their total squared mass is at least $(w(a)-a^2)_+$.
+Write
+$(w(a)-a^2)_+=kC^2+v$, with
+$k\in\mathbb Z_{\ge0}$ and $0\le v<C^2$.
+The packing argument of Lemma~\ref{jp:profile} gives
+\[
+ P_f(y)\ge Q_a(y)
+ :=B_y(a)+kB_y(C)+B_y(\sqrt v).
+\]
+
+Split the interval $[2/5,A_*]$ at $a=1/2$, at any change
+between the two formulas defining $w(a)$, and at the packing
+transitions $w(a)-a^2=kC^2$.
+On the interior of each resulting subinterval, $k$ is fixed
+and $(w(a)-a^2)_+$ is affine in $a^2$.
+The squared cap $C^2$ is affine in $a^2$ below $1/2$;
+above $1/2$, it is $(1-a)^2$, which is convex in $a^2$.
+Lemma~\ref{lem:moving-cap}, applied to
+$b(s)=B_y(\sqrt s)$, therefore makes the tail contribution
+concave in $a^2$.
+The retained contribution $B_y(a)$ is also concave in $a^2$,
+so $Q_a(y)$ is concave in that parameter.
+
+Taking reciprocals and integrating, as in the proof of
+Lemma~\ref{lem:source-convexity}, shows that
+\[
+ a^2\longmapsto
+ T_{Q_a}\bigl(H(\rho_-)/\rho_-\bigr)
+\]
+is convex on each subinterval.
+The profile formulas agree at packing transitions, so continuity
+includes the endpoints.
+It therefore suffices to check the boundary values, which solve
+linear or quadratic equations in $a$.
+At $a=2/5$, the same chord bound used above gives
+$Q_{2/5}(y)\ge(25w(0)/4)B_y(2/5)$,
+so the common small-coefficient envelope also bounds this
+endpoint clock.
+
+Together with that common envelope, the remaining boundary
+values give the numbers of clock checks listed in the table.
+All 20 clocks satisfy \eqref{ub:clock-trigger}.
+For each band, the scalar entropy inequality in
+\eqref{ub:cubic-gates} also holds at both correlation endpoints.
+Appendix~\ref{app:certificate} describes these evaluations.
+Lemma~\ref{ub:cubic-endpoints} then gives $C_\rho>0$ and both
+conditions in \eqref{ub:cubic-gates} throughout each band.
+Lemma~\ref{ub:cell-dichotomy} completes the proof.
+\end{proof}
+
+\subsection{The two-coordinate band}
+
+On $39/40\le\rho\le49/50$, the one-coordinate construction
+still covers functions whose largest singleton coefficient is
+at most $2/3$. For the remaining functions, we use the two largest
+coefficients, either in the profile bound or in the
+two-coordinate entropy comparison.
+
+\begin{theorem}\label{ub:last-middle}
+The CK inequality holds for every $\rho\in[39/40,49/50]$.
+\end{theorem}
+
+\begin{proof}
+By compression, it suffices to consider an increasing function $f$.
+Order its singleton coefficients and put $a=\widehat f(1)$.
+Set
+$A_*=76043/100000$ and $M=150614067/200000000$.
+The scalar entropy inequality in \eqref{ub:cubic-gates}
+holds at both correlation endpoints.
+Lemma~\ref{ub:cubic-endpoints} therefore gives $C_\rho>0$
+and both conditions in \eqref{ub:cubic-gates} throughout the band.
+
+With these parameters, the one-coordinate construction in the
+proof of Theorem~\ref{ub:upper-middle} requires four clock checks
+for $a\le2/3$. These satisfy \eqref{ub:clock-trigger},
+so Lemma~\ref{ub:cell-dichotomy} covers this range.
+Direct evaluation also gives $M_{49/50}(A_*)>0$.
+Lemma~\ref{ub:local-propagation} and Theorem~\ref{ub:local}
+therefore cover $a\ge A_*$.
+
+It remains to consider $2/3<a<A_*$.
+Write $b=\widehat f(2)$ and $c=\widehat f(\{1,2\})$.
+Then $0\le b\le1-a$ and $|c|\le b$.
+We first prove CK throughout the region
+$3a+7b\ge64/25$.
+
+Put $\lambda=1-\rho^2<1/20$ and define
+$r:\{-1,1\}^2\to\R$ by
+$r(x,y)=\rho ax+\rho by+\rho^2cxy$.
+Thus $T_\rho f_{\{1,2\}}=\mu+r$ and $\E r=0$,
+where expectation is uniform on the two-dimensional cube.
+Proposition~\ref{jp:local2-exact} and the bound
+$J_{\rm AND}(\rho)\ge H(\rho)-\lambda/10$
+from Lemma~\ref{lem:and-rational} give
+\[
+ \Phi(\rho)-A_\rho(f)
+ \ge [\rho^2(a+b)-1]H(\rho)-\frac{\lambda\rho^2b}{5}+\lambda\E H(\mu+r)+\Phi(\mu).
+\]
+We bound the last two terms using
+Lemma~\ref{lem:mean-moments}.
+Expanding the centered moments gives
+\[
+ \E r^2=\rho^2(a^2+b^2)+\rho^4c^2, \quad
+ \E r^3=6\rho^4abc, \quad
+ \E r^4=\rho^4(a^4+b^4+6a^2b^2)
+       +6\rho^6c^2(a^2+b^2)+\rho^8c^4.
+\]
+Since $|c|\le b\le1-a$ and $a\ge2/3$,
+$|\E r^3|\le6a(1-a)^2\le4/9$.
+Consequently, the error term in Lemma~\ref{lem:mean-moments}
+satisfies
+$\frac25\lambda^2(\E r^3)^2<1/5000$.
+
+To bound the other moments, define
+$h:\{-1,1\}^2\to\R$ by
+$h(x,y)=\rho ax+\rho by+\rho^2bxy$.
+The displayed formulas show that
+$\E r^2\le\E h^2$ and $\E r^4\le\E h^4$.
+Also, $\rho^2(a+b)-1\le0$.
+Combining the preceding entropy estimate with
+Lemma~\ref{lem:mean-moments},
+$H(\rho)/\lambda<17/12$,
+$9/13<\log2<7/10$, and
+$1/(5000\lambda)\le1/198$ yields
+\begin{equation}\label{eq:local-moment-polynomial}
+ \frac{\Phi(\rho)-A_\rho(f)}{1-\rho^2}
+ \ge
+ \frac{17}{12}[\rho^2(a+b)-1]-\frac{\rho^2b}{5}+\frac9{13}-\frac{\E h^2}{2}
+       -\frac{\E h^4}{5}-\frac1{198}.
+\end{equation}
+
+For fixed $\rho$, the function $h(x,y)$ is linear in $(a,b)$.
+Thus $\E h^2$ and $\E h^4$ are convex in $(a,b)$, making
+the right side of \eqref{eq:local-moment-polynomial} concave.
+Its minimum on
+$2/3\le a\le A_*$, $a+b\le1$, and $3a+7b\ge64/25$
+therefore occurs at one of the four vertices
+\[
+ (2/3,2/25),\qquad
+ (2/3,1/3),\qquad
+ (A_*,1-A_*),\qquad
+ \left(A_*,\frac{64/25-3A_*}{7}\right).
+\]
+For fixed $a,b$, both moments are polynomials in $\rho^2$
+with nonnegative coefficients, so the same right side is
+concave in $\rho^2$.
+It therefore suffices to evaluate it at these four vertices
+and the two correlation endpoints.
+All eight values exceed $1/1000$, proving CK on this region.
+
+To cover the remaining pairs, use the finite rectangle partition
+of $[0,A_*]\times[0,1/2]$ described in
+Appendix~\ref{app:certificate}.
+Before splitting a rectangle $[a_0,A]\times[b_0,B]$,
+apply the reductions
+\[
+ a_0\leftarrow\max(a_0,b_0),\qquad
+ A\leftarrow\min(A,1-b_0),\qquad
+ B\leftarrow\min(B,A,1-a_0)
+\]
+in this order.
+They preserve every point satisfying $a\ge b$ and $a+b\le1$.
+Each split retains both closed subrectangles, so coverage
+is preserved.
+
+Exactly 22 final rectangles meet $a>2/3$.
+Seventeen satisfy
+$3\max(a_0,2/3)+7b_0\ge64/25$
+and are covered by the moment bound above.
+For each of the remaining five,
+the two-coordinate threshold \eqref{ub:threshold}
+and a one- or two-coordinate profile satisfy the conditions
+of Lemma~\ref{ub:cell-dichotomy}.
+The partition data, threshold checks, and clock evaluations
+are described in Appendix~\ref{app:certificate}.
+Together with the one-coordinate cases, these rectangles
+cover every remaining function.
+\end{proof}
+
+\section{Entropy interpolation and spectral transfer}
+\label{sec:full-head}
+
+Throughout this section, $0<\rho<1$ and
+$f:\{-1,1\}^n\to\{-1,1\}$ is nonconstant.
+Write $\mu=\E f$, $u=\atanh\rho$,
+$g=T_\rho f:\{-1,1\}^n\to(-1,1)$, and
+$h=\arcsin g:\{-1,1\}^n\to(-\pi/2,\pi/2)$.
+All expectations use the uniform probability measure.
+
+The high-correlation argument will rule out positive gaps by
+showing that $G_f(\rho)>0$ implies $G_f'(\rho)>0$.
+By \eqref{eq:gap-derivative},
+$\rho G_f'(\rho)=D(g)-\rho u$,
+so we seek lower bounds on $D(g)$ that exceed $\rho u$
+under the positive-gap assumption.
+
+The transformation $h=\arcsin g$ relates entropy production
+to a quadratic energy.
+Indeed, $(\arcsin)'(t)=\sqrt{\Phi''(t)}$, so
+Cauchy--Schwarz gives
+\[
+ (\arcsin t-\arcsin s)^2
+ \le(t-s)(\atanh t-\atanh s)
+ \qquad(-1<s<t<1).
+\]
+Summing over cube edges yields
+$D(g)\ge\sum_i\E[(\mathcal L_i h)^2]$.
+We will quantify the difference between these energies and
+control the error in replacing $h$ by $(\pi/2)g$.
+This allows us to obtain lower bounds expressed in the
+Fourier coefficients of $f$.
+
+Define $\Psi:[-1,1]\to[0,\infty)$ and its average by
+\begin{equation}\label{eq:entropy-correction}
+ \Psi(t)=t^2\log2-\Phi(t)
+        =H(t)-(1-t^2)\log2,
+ \qquad
+ \mathcal J=\E\Psi(g).
+\end{equation}
+The entropy series gives $\Psi\ge0$, with
+$\Psi(0)=\Psi(1)=\Psi(-1)=0$.
+Thus $\mathcal J$ is the difference between $\E H(g)$
+and its quadratic lower bound $(1-\E g^2)\log2$.
+Under the positive-gap assumption,
+\eqref{ub:gap-definitions} gives
+\[
+ 0\le\mathcal J\le\E H(g)
+ <H(\rho)-\Phi(\mu)\le H(\rho).
+\]
+The next lemma uses $\mathcal J$ to bound the approximation
+error between $h$ and $(\pi/2)g$.
+
+\subsection{A sharp scalar error estimate}
+
+\begin{lemma}\label{fh:arcsine-error}
+For every $t\in[-1,1]$,
+\begin{equation}\label{eq:arcsine-constant}
+ (\arcsin t-\tfrac{\pi}{2}t)^2\le C_*\Psi(t),
+ \qquad
+ C_*:=\frac{(\frac{\pi}{2}-1)^2}{\log2-1/2}.
+\end{equation}
+The constant $C_*$ is optimal.
+In particular,
+\[
+ \|h-\tfrac{\pi}{2}g\|_2^2\le C_*\mathcal J.
+\]
+\end{lemma}
+
+\begin{proof}
+Put $a_n=4^{-n}\binom{2n}{n}$.
+For $|t|<1$, we use the expansions
+\[
+ \arcsin t=\sum_{n\ge0}\frac{a_n}{2n+1}t^{2n+1},
+ \qquad
+ (\arcsin t)^2
+ =\sum_{n\ge0}
+   \frac{t^{2n+2}}{(n+1)(2n+1)a_n}.
+\]
+Together with \eqref{ub:entropy-series}, these give
+\[
+ U(t):=C_*\Psi(t)-(\arcsin t-\tfrac{\pi}{2}t)^2
+      =\sum_{k\ge1}b_kt^{2k}.
+\]
+The choice of $C_*$ makes $b_1=0$, while for $n\ge1$,
+\begin{equation}\label{fh:error-coefficients}
+ b_{n+1}=\frac{c_n-C_*}{2(n+1)(2n+1)},
+ \qquad
+ c_n=2\pi(n+1)a_n-\frac2{a_n}.
+\end{equation}
+
+We first show that $c_n$ decreases strictly.
+The Wallis integrals give
+\[
+ \frac{\pi}{2}a_n
+ =\int_0^{\pi/2}\sin^{2n}x\,dx
+ <\int_0^{\pi/2}\sin^{2n-1}x\,dx
+ =\frac1{2na_n},
+\]
+so $\pi n a_n^2<1$.
+Using $a_{n+1}/a_n=(2n+1)/(2n+2)$, we obtain
+\[
+ c_{n+1}-c_n
+ =\frac{\pi n(2n+1)a_n^2-2(n+1)}
+        {(n+1)(2n+1)a_n}<0.
+\]
+Direct evaluation gives $c_3<C_*<c_2$.
+Consequently, $b_2,b_3>0$ and $b_k<0$ for every $k\ge4$.
+
+The series converge absolutely at $t=1$, where $U(1)=0$.
+For $x=t^2\in[0,1]$, the negative coefficients satisfy
+$b_kx^k\ge b_kx^3$ for $k\ge4$.
+Hence
+\[
+ U(t)\ge b_2x^2+
+       \Bigl(b_3+\sum_{k\ge4}b_k\Bigr)x^3=b_2x^2(1-x)\ge0,
+\]
+where the equality uses $U(1)=0$ and $b_1=0$.
+Evenness proves \eqref{eq:arcsine-constant} on $[-1,1]$.
+
+The ratio
+$(\arcsin t-\frac{\pi}{2}t)^2/\Psi(t)$ tends to $C_*$
+as $t\to0$, so the constant cannot be decreased.
+Finally, averaging the scalar inequality at $t=g(X)$
+proves the stated $L_2$ bound.
+\end{proof}
+
+\subsection{An exact edge refinement}
+
+The inequality $D(g)\ge\operatorname{Dir}(\arcsin g)$ discards
+a nonnegative contribution on each edge.
+We now bound this contribution in terms of the average endpoint
+entropy and half-difference, then sum over selected coordinates.
+
+Define $\zeta:[0,\infty)\to[0,\pi/2)$ and
+$R:[0,\infty)\to[0,\infty)$ by
+\begin{equation}\label{eq:arcsine-remainder}
+ \zeta(v)=\arcsin(\tanh v)=\arctan(\sinh v),
+ \qquad
+ R(v)=v-\frac{\zeta(v)^2}{\tanh v}
+ \quad \text{for } v>0,
+\end{equation}
+with $\zeta(0)=R(0)=0$.
+For an edge with endpoint values $-\tanh v$ and $\tanh v$,
+the entropy production is $v\tanh v$ and the arcsine energy
+is $\zeta(v)^2$. Their difference is therefore $\tanh v\,R(v)$.
+
+For $u>0$, define
+\begin{equation}\label{eq:profile-height}
+ \ell_u(a)=F^{-1}(F(u)/a)\quad(0<a\le1),
+ \qquad
+ \ell_u(0)=0.
+\end{equation}
+Since $F$ is decreasing, $\ell_u:[0,1]\to[0,u]$ is increasing,
+with $\ell_u(1)=u$.
+We call $\ell_u(a)$ the profile height.
+For $u=\atanh\rho$, the identity $F(u)=H(\rho)/\rho$ gives
+\[
+ B_{H(\rho)}(\rho a)=\rho a\,\ell_u(a)
+ \qquad \text{for } 0\le a\le 1.
+\]
+The next proposition gives an energy correction in terms of
+these heights and bounds the weighted sum
+$\sum_i|\widehat f(i)|\ell_u(|\widehat f(i)|)$,
+which will be used in Section~\ref{sec:coordinate-spectral}.
+
+\begin{proposition}[Simultaneous arcsine refinement]
+\label{fh:simultaneous-refund}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be nonconstant,
+$0<\rho<1$, $g=T_\rho f$, and $h=\arcsin g$.
+For every $K\subseteq[n]$,
+\[
+ D(g)\ge\operatorname{Dir}(h)
+ +\rho\sum_{\substack{i\in K\\|\widehat f(i)|>0}}
+ |\widehat f(i)|
+ R\left(F^{-1}\left(
+       \frac{E_\rho(f)}{\rho|\widehat f(i)|}\right)\right).
+\]
+Put $u=\atanh\rho$ and
+$\ell_i=\ell_u(|\widehat f(i)|)$.
+If $G_f(\rho)>0$, then
+\[
+ D(g)\ge\operatorname{Dir}(h)
+       +\rho\sum_{i\in K}|\widehat f(i)|R(\ell_i),
+ \qquad
+ \sum_i|\widehat f(i)|\ell_i\le\frac{D(g)}{\rho}.
+\]
+\end{proposition}
+
+We first establish the convexity needed to average the edge
+inequalities. Here $e$ represents average endpoint entropy
+and $d$ the absolute half-difference.
+
+\begin{lemma}\label{fh:refund-convexity}
+The function $R$ is strictly increasing and strictly convex
+on $(0,\infty)$.
+Define
+\begin{equation}\label{eq:edge-remainder}
+ \mathcal R(e,d)=dR(F^{-1}(e/d))
+ \qquad(e,d>0).
+\end{equation}
+Then $\mathcal R$ is jointly convex, strictly increasing in $d$,
+and strictly decreasing in $e$.
+It extends continuously to $(0,\infty)\times[0,\infty)$
+by $\mathcal R(e,0)=0$.
+Moreover, $(e,q)\mapsto\mathcal R(e,|q|)$ is jointly convex
+on $(0,\infty)\times\R$.
+\end{lemma}
+
+\begin{proof}
+Differentiation gives
+\[
+ R'(v)=
+ \left(1-\frac{\arctan(\sinh v)}{\sinh v}\right)^2.
+\]
+For $s>0$, the ratio $\arctan s/s$ has strictly negative
+derivative, because
+$\arctan s>s/(1+s^2)$.
+It decreases from $1$ to $0$, so $R',R''>0$.
+
+By Lemma~\ref{as:profile-convex}, $F^{-1}$ is convex and
+decreasing.
+Since $R$ is increasing and convex,
+$R\circ F^{-1}$ is convex and decreasing.
+The perspective argument in the proof of
+Lemma~\ref{u963:scalar} therefore gives joint convexity of
+$\mathcal R$.
+Its decrease in $e$ follows directly from the defining formula.
+Increasing $d$ increases both positive factors
+$d$ and $R(F^{-1}(e/d))$.
+
+As $(e,d)\to(e_0,0)$ with $e_0>0$, we have
+$F^{-1}(e/d)\to0$, and hence $\mathcal R(e,d)\to0$.
+This proves the continuous extension.
+Finally, the triangle inequality, monotonicity in $d$,
+and joint convexity give convexity of
+$(e,q)\mapsto\mathcal R(e,|q|)$.
+\end{proof}
+
+On a single edge, the following lemma bounds the difference
+between entropy production $db$ and arcsine energy $\theta^2$.
+
+\begin{lemma}\label{fh:edge-inequality}
+Let $x=c+d$ and $y=c-d$ belong to $(-1,1)$, with $d>0$.
+Put
+\[
+ b=\frac{\atanh x-\atanh y}{2},
+ \qquad
+ \theta=\frac{\arcsin x-\arcsin y}{2},
+ \qquad
+ e=\frac{H(x)+H(y)}2.
+\]
+Then
+\[
+ db-\theta^2\ge\mathcal R(e,d).
+\]
+Equality holds when $c=0$, and the inequality is strict
+when $c\ne0$.
+For $d=0$, both sides are zero under the continuous extension
+of $\mathcal R$.
+\end{lemma}
+
+\begin{proof}
+Put $a=(\atanh x+\atanh y)/2$ and
+$\ell=F^{-1}(e/d)$.
+Lemma~\ref{lem:edge-entropy-profile} gives
+$db\ge B_e(d)=d\ell$, so $b\ge\ell$.
+The identities $x=\tanh(a+b)$ and $y=\tanh(a-b)$ give
+$d=\frac{\sinh b\cosh b}{\cosh^2a+\sinh^2b}$ and 
+$\theta=\arctan\left(\frac{\sinh b}{\cosh a}\right)$.
+
+For $t>0$, put
+$q(t)=(1+t^2)(\arctan t/t)^2$.
+We have
+\[
+ \frac{q'(t)}{q(t)}
+ =\frac{2}{1+t^2}
+   \left(\frac1{\arctan t}-\frac1t\right)>0,
+\]
+since $\arctan t<t$.
+Consequently,
+\[
+ \frac{\theta^2}{d}
+ =\tanh b\,q\left(\frac{\sinh b}{\cosh a}\right)
+ \le\tanh b\,q(\sinh b)
+ =\frac{\zeta(b)^2}{\tanh b}.
+\]
+It follows that
+$db-\theta^2\ge dR(b)\ge dR(\ell)=\mathcal R(e,d)$,
+where the second inequality uses
+Lemma~\ref{fh:refund-convexity}.
+
+The first inequality is strict unless $a=0$, equivalently
+$c=0$.
+In that case $d=\tanh b$ and $e=H(\tanh b)$,
+so $e/d=F(b)$ and both inequalities are equalities.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{fh:simultaneous-refund}]
+Write $e=E_\rho(f)$.
+For each coordinate $i$, fix the other coordinates and let
+$g_+,g_-$ be the two endpoint values of $g$.
+Define
+$e_i=[H(g_+)+H(g_-)]/2$ and
+$q_i=(g_+-g_-)/2$.
+Averaging over the remaining coordinates gives
+\[
+ \E_{X_{-i}}e_i=e,
+ \qquad
+ \E_{X_{-i}}q_i=\rho\widehat f(i).
+\]
+Apply Lemma~\ref{fh:edge-inequality}, interchanging the
+endpoints when necessary, and then use Jensen's inequality
+for the convex map $(e,q)\mapsto\mathcal R(e,|q|)$:
+\[
+ \mathcal D_i(g)-\operatorname{Dir}_i(h)
+ \ge\E_{X_{-i}}\mathcal R(e_i,|q_i|)\ge\mathcal R(e,\rho|\widehat f(i)|).
+\]
+These remainders are nonnegative for every coordinate.
+Summing over $i\in K$ and discarding the remainders outside
+$K$ proves the first assertion.
+
+If $G_f(\rho)>0$, then $e<H(\rho)$.
+Since $\mathcal R$ decreases in its first argument,
+\[
+ \mathcal R(e,\rho|\widehat f(i)|)
+ \ge\mathcal R(H(\rho),\rho|\widehat f(i)|)
+ =\rho|\widehat f(i)|R(\ell_i).
+\]
+This proves the positive-gap refinement, including coordinates
+with zero singleton coefficient.
+
+Finally, Proposition~\ref{prop:profile-production} and
+monotonicity of $B_e$ in $e$ give
+\[
+ D(g)\ge\sum_iB_e(\rho|\widehat f(i)|)\ge\sum_iB_{H(\rho)}(\rho|\widehat f(i)|)
+ =\rho\sum_i|\widehat f(i)|\ell_i.
+\]
+Dividing by $\rho$ proves the remaining assertion.
+\end{proof}
+
+\subsection{Spectral transfer}\label{sec:spectral-completion}
+
+We next relate quadratic forms in $h$ to quadratic forms in $g$,
+whose Fourier coefficients satisfy
+$\widehat g(S)=\rho^{|S|}\widehat f(S)$.
+The following square-completion inequality controls the cost
+by $\|h-(\pi/2)g\|_2^2$.
+Its hypothesis permits the negative eigenvalues that occur
+in Section~\ref{sec:coordinate-spectral}.
+
+\begin{lemma}[Spectral transfer]\label{fh:square-completion}
+Let $A:\mathcal H\to\mathcal H$ be a self-adjoint linear operator
+on a finite-dimensional real Hilbert space $\mathcal H$.
+If $\gamma>0$ and $A+\gamma I$ is positive definite, then
+\[
+ \langle v,Av\rangle+\gamma\|v-w\|^2
+ \ge
+ \langle w,\gamma A(\gamma I+A)^{-1}w\rangle
+\]
+for all $v,w\in\mathcal H$.
+\end{lemma}
+
+\begin{proof}
+Choose an orthonormal eigenbasis of $A$.
+Each eigenvalue $\lambda$ satisfies $\lambda+\gamma>0$,
+and
+\[
+ \lambda x^2+\gamma(x-y)^2
+ =(\lambda+\gamma)
+   \left(x-\frac{\gamma y}{\lambda+\gamma}\right)^2
+  +\frac{\gamma\lambda}{\gamma+\lambda}y^2.
+\]
+Sum over the eigenbasis and discard the nonnegative squares.
+\end{proof}
+
+On $L_2(\{-1,1\}^n)$, apply the lemma with
+$v=h$ and $w=(\pi/2)g$.
+Lemma~\ref{fh:arcsine-error} then gives
+\[
+ \langle h,Ah\rangle
+ \ge\frac{\pi^2}{4}
+     \langle g,\gamma A(\gamma I+A)^{-1}g\rangle
+     -\gamma C_*\mathcal J.
+\]
+
+The resulting estimates contain combinations of
+$\Var(g)$ and $\mathcal J$.
+For a dictator, these quantities equal $\rho^2$ and
+$\Psi(\rho)$, respectively.
+The next lemma compares
+$\Lambda\Var(g)-\Gamma\mathcal J$ with
+$\Lambda\rho^2-\Gamma\Psi(\rho)$ under the positive-gap
+assumption.
+
+\begin{lemma}[Comparison with a dictator]\label{ub:transfer}
+Let $f:\{-1,1\}^n\to\{-1,1\}$, $0<\rho<1$, and $g=T_\rho f$.
+Put $\mu=\E f$ and $\mathcal J=\E\Psi(g)$.
+For $\Lambda,\Gamma>0$, define
+\begin{equation}\label{eq:mean-transfer}
+ \eta_{\Lambda,\Gamma}(\rho)
+ =\Gamma\bigl[\tfrac12-(1-\rho^2)\log2\bigr]
+  -\Lambda\rho^2.
+\end{equation}
+If $G_f(\rho)>0$ and $\eta_{\Lambda,\Gamma}(\rho)\ge0$, then
+\[
+ \Lambda\Var(g)-\Gamma\mathcal J
+ \ge\Lambda\rho^2-\Gamma\Psi(\rho)
+       +\eta_{\Lambda,\Gamma}(\rho)\mu^2.
+\]
+\end{lemma}
+
+\begin{proof}
+Parseval gives $\Var(g)\le\rho^2(1-\mu^2)$.
+Also,
+\[
+ \mathcal J
+ =\Var(g)\log2+\Psi(\mu)-A_\rho(f)
+ <\Var(g)\log2+\Psi(\mu)-\Phi(\rho),
+\]
+where the inequality uses $G_f(\rho)>0$.
+
+The condition $\eta_{\Lambda,\Gamma}(\rho)\ge0$ implies
+$\Lambda-\Gamma\log2
+ \le\frac{\Gamma(1/2-\log2)}{\rho^2}<0$.
+Thus substituting the upper bound on $\Var(g)$ gives a
+lower bound after multiplication by this coefficient.
+Finally, $\Phi(\mu)\ge\mu^2/2$ implies
+$\Psi(\mu)\le(\log2-1/2)\mu^2$.
+Combining these estimates,
+ \begin{align*}
+ \Lambda\Var(g)-\Gamma\mathcal J
+ &\ge(\Lambda-\Gamma\log2)\Var(g)
+       +\Gamma\Phi(\rho)-\Gamma\Psi(\mu)\\
+ &\ge(\Lambda-\Gamma\log2)\rho^2(1-\mu^2)
+       +\Gamma\Phi(\rho)
+       -\Gamma(\log2-1/2)\mu^2\\
+ &=\Lambda\rho^2-\Gamma\Psi(\rho)
+       +\eta_{\Lambda,\Gamma}(\rho)\mu^2. \qedhere
+ \end{align*}
+\end{proof}
+
+\section{Coordinate projections and the spectral bound}
+\label{sec:coordinate-spectral}
+
+We seek a lower bound for $D(T_\rho f)/\rho$ that exceeds
+$u=\atanh\rho$ whenever the information gap is positive.
+We retain coordinates with large singleton coefficients in a set
+$K$, and estimate the energy outside the coordinate projection
+$P_Kh$ by a martingale argument.
+The resulting criterion, Theorem~\ref{as:gate}, depends on the
+largest singleton coefficient and scalar parameters, independently
+of the dimension.
+
+Throughout this section, $u>0$, $\rho=\tanh u$, and
+$f:\{-1,1\}^n\to\{-1,1\}$ is nonconstant and increasing.
+Write $g=T_\rho f:\{-1,1\}^n\to(-1,1)$ and
+$h=\arcsin g:\{-1,1\}^n\to(-\pi/2,\pi/2)$.
+Both functions are increasing.
+We retain $\mathcal J$ from \eqref{eq:entropy-correction} and put
+$\ell_i=\ell_u(\widehat f(i))$, using \eqref{eq:profile-height}.
+
+For $K\subseteq[n]$, define
+$P_K:L_2(\{-1,1\}^n)\to L_2(\{-1,1\}^n)$ by
+\begin{equation}\label{eq:coordinate-projection}
+ (P_Kv)(x)=\E_{X_{K^c}}v(x_K,X_{K^c}).
+\end{equation}
+This is the orthogonal projection onto functions depending only
+on the coordinates in $K$.
+Thus $P_Kf$ is $f_K$ viewed as a function on the full cube.
+The projection retains exactly the Fourier terms supported in $K$;
+in particular,
+$\operatorname{Dir}(h)
+=\operatorname{Dir}(P_Kh)+\operatorname{Dir}(h-P_Kh)$.
+
+\subsection{An influence bound for bounded functions}
+
+We first bound $\Var(P_Kf)$ using the singleton coefficients
+with indices in $K$.
+We prove a more general estimate for functions taking values
+in $[-1,1]$, without assuming monotonicity.
+
+Define $\psi:[0,1]\to[0,\infty)$ by
+\begin{equation}\label{eq:influence-cost}
+ \psi(a)=\min\left\{
+       \frac{a+a^2}{2},
+       \frac{2a(1-a/4)}{\log(4/a)}
+       \right\}\quad(0<a\le1),
+ \qquad
+ \psi(0)=0.
+\end{equation}
+
+\begin{theorem}[Variance and influences]\label{rt:source-projection}
+For every $g:\{-1,1\}^n\to[-1,1]$ and every $K\subseteq[n]$,
+\[
+ \Var(P_Kg)\le\sum_{i\in K}\psi(\|\partial_i g\|_1).
+\]
+In particular, $\Var(g)\le\sum_i\psi(\|\partial_i g\|_1)$.
+\end{theorem}
+
+This is an explicit quantitative form of Talagrand's influence
+inequality for bounded functions
+\cite{Talagrand1994,CorderoEskenazis2023}.
+We give a direct proof to obtain the stated constants.
+
+\begin{proof}
+Fourier expansion gives
+\[
+ \Var(g)=
+ \sum_i\int_0^1\|T_{\sqrt s}\partial_i g\|_2^2\,ds.
+\]
+Indeed, a Fourier term of degree $j$ contributes $s^{j-1}$
+for each of its $j$ coordinates, and
+$j\int_0^1s^{j-1}\,ds=1$.
+
+Fix $i$ and put $v=\partial_i g$ and $a=\|v\|_1$.
+Here $v$ is a function on the $(n-1)$-dimensional cube,
+and the noise operator acts on that cube.
+Since $|v|\le1$, we have $|\E v|\le a$ and $\E v^2\le a$.
+Consequently,
+\[
+ \|T_{\sqrt s}v\|_2^2
+ \le(\E v)^2+s\Var(v)
+ =(1-s)(\E v)^2+s\E v^2
+ \le(1-s)a^2+sa.
+\]
+Integrating gives $(a+a^2)/2$.
+
+Hypercontractivity gives the alternative bound
+$\|T_{\sqrt s}v\|_2^2\le\|v\|_{1+s}^2
+\le a^{2/(1+s)}$.
+For $a>0$, substitute $r=(1-s)/(1+s)$ and use
+$\log(1+r)\ge r\log2$ on $[0,1]$ to obtain
+\[
+ \int_0^1a^{2/(1+s)}\,ds
+ =2a\int_0^1\frac{a^r}{(1+r)^2}\,dr\le2a\int_0^1(a/4)^r\,dr
+ =\frac{2a(1-a/4)}{\log(4/a)}.
+\]
+Both estimates bound the same coordinate integral, so we may
+take their minimum before summing.
+If $a=0$, then $v=0$ and the integral is zero.
+This proves the assertion for $\Var(g)$.
+
+For the projection, apply this assertion to $P_Kg$.
+Its derivatives vanish outside $K$, while for $i\in K$,
+conditional expectation gives
+$\|\partial_iP_Kg\|_1\le\|\partial_i g\|_1$.
+The function $\psi$ is increasing: its first defining expression
+is increasing, and the second equals
+$2\int_0^1 4^{-r}a^{1+r}\,dr$, which is also increasing.
+The projected bound follows.
+\end{proof}
+
+Since $f$ is increasing,
+$\|\partial_i f\|_1=\E\partial_i f=\widehat f(i)$.
+Thus Theorem~\ref{rt:source-projection} gives
+$\Var(P_Kf)\le\sum_{i\in K}\psi(\widehat f(i))$.
+
+\subsection{Energy outside a coordinate projection}
+
+We next bound $\operatorname{Dir}(h-P_Kh)$ using
+$\|h-P_Kh\|_2^2$ and the squared $L_1$ norms of the outside
+derivatives.
+The nonlinear bound improves on Poincar\'e's inequality when
+the latter sum is smaller than $\|h-P_Kh\|_2^2$.
+Its affine form will produce the Fourier operator used below.
+
+The proof uses the martingale entropy argument of Falik and
+Samorodnitsky
+\cite[Theorem~2.2 and Lemma~2.3]{FalikSamorodnitsky2007}.
+For $K=\varnothing$, the nonlinear bound below, with $\log$
+replaced by $\log_+$, is contained in
+\cite[Theorem~1.9]{HanLi2026}.
+We need the version with an arbitrary retained set $K$.
+
+\begin{lemma}[Martingale energy]\label{as:strengthened-split}
+Let $h:\{-1,1\}^n\to\R$ and $K\subseteq[n]$.
+Put
+$V=\|h-P_Kh\|_2^2$ and
+$b_K=\sum_{i\notin K}(\E|\partial_i h|)^2$.
+For every $\lambda\in\R$,
+\[
+ \operatorname{Dir}(h-P_Kh)
+ \ge\left(1+\frac{\lambda}{2}\right)V
+       -\frac{e^{\lambda-1}}2b_K.
+\]
+If $V,b_K>0$, then also
+\[
+ \operatorname{Dir}(h-P_Kh)
+ \ge V+\frac V2\log\frac V{b_K}.
+\]
+\end{lemma}
+
+\begin{proof}
+The affine bound is immediate if $V=0$.
+Suppose $V>0$; then $b_K>0$, since vanishing of all outside
+derivatives would imply $h=P_Kh$.
+
+Relabel the coordinates so that $K=\{1,\ldots,m\}$.
+Let $h_i$ be the Doob increments obtained by revealing
+$X_1,\ldots,X_n$ in this order:
+\[
+ h_i=\E[h\mid X_1,\ldots,X_i]
+       -\E[h\mid X_1,\ldots,X_{i-1}],
+\]
+with conditional expectations viewed as cube functions.
+The increments with $i>m$ sum to $h-P_Kh$.
+Their Fourier supports are disjoint: a nonconstant Fourier
+term belongs to the increment indexed by its largest coordinate.
+Therefore,
+\[
+ \sum_{i>m}\|h_i\|_2^2=V,
+ \qquad
+ \sum_{i>m}\operatorname{Dir}(h_i)
+ =\operatorname{Dir}(h-P_Kh).
+\]
+
+Each increment has the form
+$h_i=X_i g_i(X_1,\ldots,X_{i-1})$, where
+$g_i=\E_{X_{>i}}\partial_i h$.
+Thus
+$\Ent(h_i^2)=\Ent(g_i^2)$ and
+$\operatorname{Dir}(h_i)=\|h_i\|_2^2+\operatorname{Dir}(g_i)$.
+Applying the log-Sobolev inequality in
+Theorem~\ref{ext:cube-functional} to $g_i$ gives
+\[
+ \Ent(h_i^2)
+ \le2\bigl[\operatorname{Dir}(h_i)-\|h_i\|_2^2\bigr].
+\]
+Conditional expectation also gives
+$\E|h_i|=\E|g_i|\le\E|\partial_i h|$.
+
+For a nonzero real random variable $Z$ on the cube, put
+$v=\E Z^2$ and define $dQ=Z^2\,dP/v$.
+Jensen's inequality gives
+$\E_Q\log|Z|\ge-\log\E_Q|Z|^{-1}
+=\log(v/\E|Z|)$.
+Here $|Z|^{-1}$ is evaluated only on the support of $Q$,
+where $Z\ne0$.
+Consequently,
+\[
+ \Ent(Z^2)
+ =2v\E_Q\log|Z|-v\log v
+ \ge v\log\frac{v}{(\E|Z|)^2}.
+\]
+Apply this to the nonzero increments and use the log-sum
+inequality:
+\[
+ \sum_{i>m}\Ent(h_i^2)
+ \ge V\log\frac{V}{\sum_{i>m}(\E|h_i|)^2}
+ \ge V\log\frac{V}{b_K}.
+\]
+Combining this with the log-Sobolev bounds and the energy
+decomposition proves the nonlinear inequality.
+Finally, apply
+$x\log x\ge\lambda x-e^{\lambda-1}$ with $x=V/b_K$.
+This gives the affine inequality.
+\end{proof}
+
+\subsection{A signed Fourier operator and the projection of \texorpdfstring{$f$}{f}}
+
+We use the affine energy bound to construct a quadratic form
+that treats modes supported in $K$ separately from modes using
+an outside coordinate.
+Spectral transfer will then express this bound in the Fourier
+coefficients of $f$.
+
+Choose $t\ge2$ and
+\begin{equation}\label{as:dual-parameters}
+ \gamma>\max\{0,\tfrac12e^{2t-3}-t\},
+ \qquad
+ k(s)=\frac{\gamma s}{\gamma+s}
+ \quad \text{for } s>-\gamma.
+\end{equation}
+The parameter $t$ determines the multiplier assigned to outside
+modes of degree at least two.
+The parameter $\gamma$ controls the approximation error in
+spectral transfer and offsets any negative singleton multiplier.
+For fixed $\gamma$, the function
+$k:(-\gamma,\infty)\to\R$ is increasing, since
+$k'(s)=\gamma^2/(\gamma+s)^2>0$.
+
+Because $h$ is increasing,
+$\E|\partial_i h|=\widehat h(i)$.
+Lemma~\ref{as:strengthened-split}, with $\lambda=2t-2$,
+therefore gives
+\[
+ \operatorname{Dir}(h)
+ \ge\operatorname{Dir}(P_Kh)
+   +t\|h-P_Kh\|_2^2
+   -\frac12e^{2t-3}\sum_{i\notin K}\widehat h(i)^2.
+\]
+Define a self-adjoint operator $A$ on
+$L_2(\{-1,1\}^n)$ by $A\chi_S=\lambda_S\chi_S$, where
+\begin{equation}\label{as:operator-multipliers}
+ \lambda_S=
+ \begin{cases}
+ 0,&S=\varnothing,\\
+ |S|,&\varnothing\ne S\subseteq K,\\
+ t-\tfrac12e^{2t-3},&S=\{i\},\ i\notin K,\\
+ t,&|S|\ge2,\ S\not\subseteq K.
+ \end{cases}
+\end{equation}
+The preceding inequality is
+$\operatorname{Dir}(h)\ge\langle h,Ah\rangle$.
+Only outside singletons can have negative multipliers,
+and \eqref{as:dual-parameters} ensures that $A+\gamma I$
+is positive definite.
+
+\begin{lemma}\label{as:spectral-line}
+Let $K\subseteq[n]$, $t\ge2$, and $\gamma$ satisfy
+\eqref{as:dual-parameters}, and let $\lambda_S$ be given by
+\eqref{as:operator-multipliers}.
+If $G_f(\rho)>0$, then
+\[
+ D(g)\ge
+ \rho\sum_{i\in K}\widehat f(i)R(\ell_i)
+ -\gamma C_*\mathcal J
+ +\frac{\pi^2}{4}
+   \sum_{S\ne\varnothing}
+       k(\lambda_S)\rho^{2|S|}\widehat f(S)^2.
+\]
+\end{lemma}
+
+\begin{proof}
+Proposition~\ref{fh:simultaneous-refund} and the preceding
+quadratic-form bound give
+\[
+ D(g)\ge
+ \rho\sum_{i\in K}\widehat f(i)R(\ell_i)+\langle h,Ah\rangle.
+\]
+Apply Lemma~\ref{fh:square-completion} with
+$v=h$ and $w=(\pi/2)g$, and use
+$\|h-(\pi/2)g\|_2^2\le C_*\mathcal J$.
+Since $A$ is diagonal in the Fourier basis and
+$\widehat g(S)=\rho^{|S|}\widehat f(S)$, this gives the stated
+Fourier sum.
+The constant mode contributes zero because $k(0)=0$.
+\end{proof}
+
+We compare this Fourier sum with $k(t)\Var(g)$.
+The possible losses come from modes supported in $K$ and
+from outside singletons.
+We control the first group using
+$\Var(P_Kf)\le\sum_{i\in K}\psi(\widehat f(i))$,
+and the second using the profile bound
+$\sum_i\widehat f(i)\ell_i\le D(g)/\rho$.
+
+Choose $0<z<u$ and define
+\begin{equation}\label{eq:retained-threshold}
+ \beta=\frac{F(u)}{F(z)},
+ \qquad
+ K=\{i:\ell_i\ge z\}
+  =\{i:\widehat f(i)\ge\beta\}.
+\end{equation}
+Here $0<\beta<1$, so every retained singleton coefficient
+is positive.
+Define
+\begin{equation}\label{eq:spectral-corrections}
+ \begin{aligned}
+ \Delta_2&=[k(t)-k(2)]\rho^4,
+ &\qquad \Delta_1&=[k(t)-k(1)]\rho^2,\\
+ \Delta_o&=[k(t)-k(t-\tfrac12e^{2t-3})]\rho^2,
+ &\qquad \tau&=\Delta_o\frac{\beta}{z}.
+ \end{aligned}
+\end{equation}
+These quantities are nonnegative, and
+$\Delta_1\ge\Delta_2$ because $t\ge2$, $k$ is increasing,
+and $\rho^2\ge\rho^4$.
+
+\begin{proposition}\label{as:master-ledger-equation}
+With the preceding choices, if $G_f(\rho)>0$, then
+\[
+ \begin{aligned}
+ \left(1+\frac{\pi^2\tau}{4\rho}\right)D(g)
+ \ge{}&
+ \frac{\pi^2}{4}k(t)\Var(g)-\gamma C_*\mathcal J\\
+ &+\sum_{i\in K}\widehat f(i)
+ \left[
+   \rho R(\ell_i)+\frac{\pi^2}{4}\tau\ell_i
+   -\frac{\pi^2}{4}\Delta_2
+       \frac{\psi(\widehat f(i))}{\widehat f(i)}
+   -\frac{\pi^2}{4}(\Delta_1-\Delta_2)\widehat f(i)
+ \right].
+ \end{aligned}
+\]
+\end{proposition}
+
+\begin{proof}
+For an inside singleton, the loss relative to the multiplier
+$k(t)$ is exactly $\Delta_1$.
+For a mode supported in $K$ of degree $j\ge2$,
+\[
+ [k(t)-k(j)]_+\rho^{2j}
+ \le[k(t)-k(2)]\rho^4=\Delta_2.
+\]
+Outside singletons have loss $\Delta_o$, and all other
+outside modes have multiplier $k(t)$.
+Consequently,
+\[
+ \sum_{S\ne\varnothing}
+   k(\lambda_S)\rho^{2|S|}\widehat f(S)^2
+ \ge k(t)\Var(g)-\Delta_2\Var(P_Kf)-(\Delta_1-\Delta_2)
+       \sum_{i\in K}\widehat f(i)^2
+   -\Delta_o\sum_{i\notin K}\widehat f(i)^2.
+\]
+Theorem~\ref{rt:source-projection} bounds the inside loss by
+\[
+\Delta_2\Var(P_Kf)
+   +(\Delta_1-\Delta_2)\sum_{i\in K}\widehat f(i)^2\le
+ \sum_{i\in K}
+ \left[
+   \Delta_2\psi(\widehat f(i))
+   +(\Delta_1-\Delta_2)\widehat f(i)^2
+ \right].
+\]
+
+For the outside singletons, the ratio $\ell_u(a)/a$ decreases
+on $(0,1]$.
+Indeed, putting $v=\ell_u(a)$ gives
+$\ell_u(a)/a=vF(v)/F(u)$; the numerator decreases with $v$
+by Lemma~\ref{as:profile-convex}, while $v$ increases with $a$.
+Since $\ell_u(\beta)=z$, we have
+$\ell_u(a)/a\ge z/\beta$ for $0<a\le\beta$.
+Thus, for every $i\notin K$,
+$\widehat f(i)^2\le(\beta/z)\widehat f(i)\ell_i$,
+including the case $\widehat f(i)=0$.
+
+Using Proposition~\ref{fh:simultaneous-refund}, we obtain
+\[
+ \Delta_o\sum_{i\notin K}\widehat f(i)^2
+\le\tau\sum_{i\notin K}\widehat f(i)\ell_i\le\tau\left[
+       \frac{D(g)}{\rho}
+       -\sum_{i\in K}\widehat f(i)\ell_i
+       \right].
+\]
+Insert these bounds into Lemma~\ref{as:spectral-line}
+and collect the terms involving $D(g)$ on the left.
+\end{proof}
+
+\subsection{One bound for all retained coordinates}
+
+We now bound the retained-coordinate contribution using
+$\sum_i\widehat f(i)\ell_i\le D(g)/\rho$.
+For this purpose, divide each coordinate cost by
+$a\ell_u(a)$ and define
+\begin{equation}\label{eq:spectral-cost}
+ \mathcal Q_u(a)=
+ \frac{\rho[\ell_u(a)-R(\ell_u(a))]
+       +\frac{\pi^2}{4}\Delta_2\psi(a)/a
+       +\frac{\pi^2}{4}(\Delta_1-\Delta_2)a}
+      {\ell_u(a)}
+ \qquad \text{for } 0<a\le 1.
+\end{equation}
+A uniform upper bound on this scalar function will control
+the entire sum, independently of the number of retained coordinates.
+
+\begin{theorem}[Uniform spectral bound]\label{as:gate}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be nonconstant and increasing,
+$\rho=\tanh u$ with $u>0$, and
+$\alpha=\max_i\widehat f(i)$.
+Choose $0<z<u$, $t\ge2$, and $\gamma$ satisfying
+\eqref{as:dual-parameters}.
+With $\beta,\tau,\mathcal Q_u$ as in
+\eqref{eq:retained-threshold}--\eqref{eq:spectral-cost}, put
+\[
+ b=\max\left\{
+       \rho+\frac{\pi^2}{4}\tau,\,
+       \sup_{\beta\le a\le\alpha}\mathcal Q_u(a)
+       \right\},
+\]
+omitting the supremum if $\alpha<\beta$.
+If $G_f(\rho)>0$ and
+$\eta_{\frac{\pi^2}{4}k(t),\,\gamma C_*}(\rho)\ge0$, then
+\[
+ \frac{D(T_\rho f)}{\rho}
+ \ge
+ \frac{\frac{\pi^2}{4}k(t)\rho^2-\gamma C_*\Psi(\rho)}{b}.
+\]
+In particular, at such a positive gap, $G_f'(\rho)>0$ whenever
+\[
+ \frac{\pi^2}{4}k(t)\rho^2-\gamma C_*\Psi(\rho)>ub.
+\]
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{ub:transfer} to the variance and entropy terms
+in Proposition~\ref{as:master-ledger-equation}, with
+$\Lambda=(\pi^2/4)k(t)$ and $\Gamma=\gamma C_*$,
+and discard the nonnegative mean correction.
+
+Put $S_K=\sum_{i\in K}\widehat f(i)\ell_i$.
+By the definition of $\mathcal Q_u$, the retained contribution
+in that proposition is
+\[
+ \sum_{i\in K}\widehat f(i)\ell_i
+ \left[\rho+\frac{\pi^2}{4}\tau
+             -\mathcal Q_u(\widehat f(i))\right].
+\]
+Rearranging the resulting inequality gives
+\[
+ \begin{aligned}
+ \frac{\pi^2}{4}k(t)\rho^2-\gamma C_*\Psi(\rho)
+ \le{}&
+ \left(\rho+\frac{\pi^2}{4}\tau\right)
+       \left(\frac{D(g)}{\rho}-S_K\right)+\sum_{i\in K}\widehat f(i)\ell_i
+          \mathcal Q_u(\widehat f(i))\\
+ \le{}&
+ b\left(\frac{D(g)}{\rho}-S_K\right)+bS_K
+ =b\frac{D(g)}{\rho}.
+ \end{aligned}
+\]
+The second inequality uses
+$0\le S_K\le D(g)/\rho$ and
+$\beta\le\widehat f(i)\le\alpha$ for $i\in K$.
+It also applies when $K=\varnothing$.
+Since $b\ge\rho>0$, division proves the first assertion.
+The derivative criterion follows from
+$G_f'(\rho)=D(g)/\rho-u$.
+\end{proof}
+
+For fixed $u,z,t,\gamma$, the bound $b$ is nondecreasing in
+$\alpha$. Thus a verification up to a given upper coefficient
+bound covers every smaller maximum coefficient.
+For $u\ge\log9$, Lemma~\ref{ub:exponential-local} covers
+$\alpha\ge1-2e^{-u}$.
+The compact-range argument below therefore checks the spectral
+condition only up to this cutoff.
+
+\subsection{An analytic bound for the spectral cost}
+
+To bound $\mathcal Q_u(a)$ over an interval of coefficients,
+we use the height $v=\ell_u(a)$, so $a=F(u)/F(v)$.
+The next lemma gives convex upper bounds as functions of $v$.
+Their maxima on a closed height interval occur at its endpoints.
+
+\begin{lemma}[Convex upper bounds for the spectral cost]
+\label{as:convex-majorant}
+Fix $u,c>0$ and $\Delta_1\ge\Delta_2\ge0$, and put $\rho=\tanh u$.
+In \eqref{eq:spectral-cost}, replace $\psi(a)$ by either
+$(a+a^2)/2$ or $2a(1-a/4)/\log(4/a)$.
+Set $a=F(u)/F(v)$ and replace $[v-R(v)]/v$ by
+\[
+ 1-R'(c)+\frac{cR'(c)-R(c)}{v}.
+\]
+For either choice of the formula for $\psi$, the resulting
+function is a convex upper bound for
+$\mathcal Q_u(F(u)/F(v))$ on $0<v\le u$.
+
+Alternatively, replacing $\rho[v-R(v)]/v$ by
+$\pi^2/(4v)$ gives a convex upper bound with either choice
+of the formula for $\psi$.
+\end{lemma}
+
+\begin{proof}
+Put $a=F(u)/F(v)$.
+Since $F$ is decreasing, $0<v\le u$ implies
+$0<a\le1$ and $\ell_u(a)=v$.
+Either expression defining $\psi$ is an upper bound on $\psi(a)$,
+and its coefficient in \eqref{eq:spectral-cost} is nonnegative.
+
+Convexity of $R$ gives
+$R(v)\ge R(c)+R'(c)(v-c)$.
+Also $cR'(c)-R(c)\ge0$, since the tangent at $c$ lies below
+$R(0)=0$.
+Thus the tangent replacement is an upper bound consisting
+of a constant and a nonnegative multiple of $1/v$.
+
+For the quadratic choice of $\psi$, the remaining terms are
+\[
+ \frac{\pi^2}{4}
+ \left[
+   \frac{\Delta_2}{2v}
+   +\left(\Delta_1-\frac{\Delta_2}{2}\right)
+      \frac{F(u)}{vF(v)}
+ \right].
+\]
+For the logarithmic choice, the identity
+$2(1-a/4)/\log(4/a)=2\int_0^1(a/4)^r\,dr$
+gives the remaining terms as
+\[
+ \frac{\pi^2}{4}
+ \left[
+   2\Delta_2\int_0^1
+      \frac{(F(u)/4)^r}{vF(v)^r}\,dr
+   +(\Delta_1-\Delta_2)\frac{F(u)}{vF(v)}
+ \right].
+\]
+These are nonnegative combinations of the convex functions
+$1/[vF(v)^r]$, $0\le r\le1$, from
+Lemma~\ref{as:profile-convex}.
+Integration preserves convexity, proving the first assertion.
+
+Finally, convexity of $\arcsin$ on $[0,1]$ gives
+$\arcsin x\le(\pi/2)x$.
+Hence
+\[
+ \rho[v-R(v)]
+ =\rho\frac{\arcsin^2(\tanh v)}{\tanh v}
+ \le\frac{\pi^2}{4}\rho\tanh v
+ \le\frac{\pi^2}{4}.
+\]
+The alternative replacement therefore leaves a sum of convex
+functions.
+\end{proof}
+
+For each fixed $u$, we may choose the formula for $\psi$ and
+the tangent point separately on each height interval.
+Once these choices are fixed, only the two endpoints of that
+interval need to be checked.
+
+\subsection{An explicit choice on the compact noise range}
+\label{sec:compact-spectral}
+
+An upper bound on the largest singleton coefficient gives an
+upper height through $\ell_u$, which involves $F^{-1}$.
+The next lemma replaces this inverse by an explicit bound
+and also bounds the coefficient corresponding to that height.
+
+\begin{lemma}[Inverse bound]\label{as:explicit-inverse}
+Let $u>2$ and $e^{2-u}\le a\le1$.
+For $v=u+(2u+1)\log a/(4u+1)$,
+\[
+ F^{-1}(F(u)/a)\le v\le u,
+ \qquad
+ \frac{F(u)}{F(v)}
+ \le e^{-2(u-v)}\frac{2u+1}{2v+1}.
+\]
+\end{lemma}
+
+\begin{proof}
+Define
+\begin{equation}\label{eq:scaled-profile}
+ S(s)=e^{2s}F(s)\qquad \text{for } s>0.
+\end{equation}
+Lemma~\ref{app:scaled-profile-derivative} gives
+$1/(2s+1)<S'(s)/S(s)<2/(2s+1)$ for $s\ge2$.
+
+The case $a=1$ is immediate.
+Otherwise put $w=F^{-1}(F(u)/a)<u$.
+Since $-F'/F>1$,
+\[
+ -\log a=\int_w^u-\frac{F'(s)}{F(s)}\,ds>u-w,
+\]
+so $w>u+\log a\ge2$.
+For $w\le s\le u$,
+$-F'(s)/F(s)=2-S'(s)/S(s)<2-1/(2u+1)$.
+Integrating gives
+\[
+ -\log a<
+ \frac{4u+1}{2u+1}(u-w),
+\]
+which rearranges to $w<v<u$.
+
+Finally,
+\[
+ \log\frac{S(u)}{S(v)}
+ \le\int_v^u\frac{2\,ds}{2s+1}
+ =\log\frac{2u+1}{2v+1}.
+\]
+Using \eqref{eq:scaled-profile} proves the second bound.
+\end{proof}
+
+Throughout $45951/20000\le u\le8$, choose
+\[
+ z=\log u+\frac{u}{25}-\frac25,
+ \qquad
+ t=\frac{49u}{100}+\frac75,
+ \qquad
+ \gamma=\frac12e^{49u/50-1/5}+e^{9u/20+1/4}.
+\]
+Since $2t-3=49u/50-1/5$, we have
+$\gamma>\frac12e^{2t-3}$.
+Also $0<z<2u/3$ and $t>2$, using
+$\log2>1/2$ and $\log u\le u/2$ for $u\ge2$.
+Thus \eqref{as:dual-parameters} holds.
+
+We also verify the mean-transfer condition analytically.
+The ratio $\gamma/t$ increases on $u\ge9/4$, because
+$\gamma'/\gamma\ge9/20>t'/t$.
+Direct evaluation gives
+$\gamma(9/4)>(5/2)t(9/4)$, so
+$t/(\gamma+t)<2/7$ throughout our range.
+Using $1-\rho^2<1/20$, $C_*>8/5$,
+$\pi^2/4<5/2$, and $\log2<7/10$, we obtain
+\[
+ \frac{\eta_{\frac{\pi^2}{4}k(t),\,\gamma C_*}(\rho)}{\gamma}
+ =C_*\bigl[\tfrac12-(1-\rho^2)\log2\bigr]
+   -\frac{\pi^2}{4}\frac{t}{\gamma+t}\rho^2>\frac85\left(\frac12-\frac7{200}\right)-\frac57>0.
+\]
+
+Set $a_*(u)=1-2e^{-u}$.
+This function is increasing, and direct evaluation gives
+$a_*(9/4)>e^{-1/4}$.
+Thus $\log a_*(u)>-1/4$ and
+$u+\log a_*(u)>2$ on our range.
+Lemma~\ref{as:explicit-inverse} therefore applies at
+$a=a_*(u)$ and gives
+\[
+ \ell_u(a_*(u))\le v_+(u),
+ \qquad
+ v_+(u)=u+\frac{2u+1}{4u+1}\log a_*(u).
+\]
+By monotonicity of $\ell_u$, this upper height also covers
+every $a\le a_*(u)$.
+Moreover,
+$v_+(u)>u-1/4>2u/3$, so all retained heights lie in
+$[z,v_+(u)]$.
+
+On $[z,2u/3]$, use the logarithmic formula for $\psi$
+in Lemma~\ref{as:convex-majorant}, with the tangent to $R$
+at $z$.
+On $[2u/3,v_+(u)]$, use the quadratic formula, with the
+tangent at $v_+(u)$.
+Each upper bound is convex in height, so it suffices to check
+its two endpoints.
+At $v_+(u)$, use the second inequality in
+Lemma~\ref{as:explicit-inverse} to bound
+$F(u)/F(v_+(u))$; the quadratic upper bound increases
+with this ratio.
+
+This leaves four endpoint evaluations, including one for each
+upper bound at the shared height $2u/3$, together with the
+discarded-coordinate term $\rho+\pi^2\tau/4$.
+Interval bounds on 24 closed intervals covering
+$[45951/20000,8]$ verify
+\[
+ \frac{\frac{\pi^2}{4}k(t)\rho^2-\gamma C_*\Psi(\rho)}{u}
+ >
+ \max\left\{
+   \rho+\frac{\pi^2}{4}\tau,\,
+   \sup_{\beta\le a\le a_*(u)}\mathcal Q_u(a)
+ \right\}.
+\]
+Appendix~\ref{app:certificate} gives the interval partition
+and evaluation details.
+Theorem~\ref{as:gate} therefore yields $G_f'(\rho)>0$
+at every positive gap with $\alpha\le a_*(u)$ throughout
+this compact range.
+The complementary range $\alpha\ge a_*(u)$ is covered by
+Lemma~\ref{ub:exponential-local}.
+
+\section{Completion of the qualitative proof}
+\label{sec:qualitative-completion}
+
+It remains to prove CK for $49/50\le\rho\le1$.
+We show that $G_f'(\rho)>0$ whenever $G_f(\rho)>0$.
+Together with $G_f(1)=-\Phi(\mu)\le0$, this proves the remaining
+range by Lemma~\ref{ub:barrier}.
+
+\subsection{A local bound at arbitrary mean}
+
+Recall the dictator distance $\delta(f)$ from
+\eqref{eq:dictator-distance}, and put
+\begin{equation}\label{eq:local-thresholds}
+ u_\delta=\log\frac{3}{2\delta}\qquad(\delta>0).
+\end{equation}
+Thus $u\le u_\delta$ is equivalent to
+$\delta\le(3/2)e^{-u}$.
+
+\begin{lemma}\label{rt:local-junction}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ satisfy
+$0<\delta(f)\le1/64$.
+Then the CK inequality holds for
+$0\le\rho\le\tanh u_{\delta(f)}$.
+\end{lemma}
+
+\begin{proof}
+Put $\delta=\delta(f)$,
+$p=4\delta^2/(9+4\delta^2)$, and
+$\rho_\delta=1-2p=\tanh u_\delta$.
+By Theorem~\ref{ub:local} and
+Lemma~\ref{ub:local-propagation}, it suffices to show
+$M_{\rho_\delta}(1-2\delta)>0$.
+
+Since
+$H(\rho_\delta(1-2\delta))
+ =H_{\rm b}(\delta+p(1-2\delta))$
+and $\delta\le\delta+p(1-2\delta)\le1/2$, we have
+$H(\rho_\delta(1-2\delta))\ge H_{\rm b}(\delta)$.
+The logarithm bounds
+$x\le-\log(1-x)\le x/(1-x)$ and $\log(1+x)\le x$ give
+\[
+ \frac{H_{\rm b}(\delta)}{\delta}
+ \ge\log(1/\delta)+1-\delta,\qquad
+ \frac{H_{\rm b}(p)}p
+ \le2\log(1/\delta)+\log(9/4)+4\delta^2/9+1.
+\]
+By the definition of $M_\rho$,
+\[
+ \frac{M_{\rho_\delta}(1-2\delta)}{2\delta p}
+ =\frac{2(1-p)}{\delta}
+       H(\rho_\delta(1-2\delta))-\left[1+\frac{2p(1-p)(1-2\delta)}{\delta}\right]
+       \frac{H_{\rm b}(p)}p.
+\]
+Substituting the preceding bounds and using $p\le4\delta^2/9$
+bounds this expression below by
+\[
+ 1-\log(9/4)-\delta\left[2+\frac89
+       \bigl(2\log(1/\delta)+\log(9/4)+1\bigr)\right]-\frac{4\delta^2}{9}\bigl(2\log(1/\delta)+3\bigr).
+\]
+Here we have discarded a positive cubic term.
+The functions $\delta\log(1/\delta)$ and
+$\delta^2\log(1/\delta)$ increase on $(0,1/64]$, so this lower
+bound is minimized at $\delta=1/64$.
+Direct evaluation there gives a value greater than $1/80$.
+Thus $M_{\rho_\delta}(1-2\delta)>0$.
+\end{proof}
+
+\subsection{A spectral comparison reaching the local neighborhood}
+
+For $u\ge8$, Lemma~\ref{rt:local-junction} covers
+$0<\delta(f)\le(3/2)e^{-u}$, and dictators satisfy CK with equality.
+The next proposition proves the required derivative inequality
+on the other side of this boundary.
+
+\begin{proposition}\label{qual:tail-derivative}
+Let $f:\{-1,1\}^n\to\{-1,1\}$ be increasing, and let
+$\rho=\tanh u$ with $u\ge8$.
+If $\delta(f)\ge(3/2)e^{-u}$, then
+$G_f'(\rho)>0$ whenever $G_f(\rho)>0$.
+\end{proposition}
+
+\begin{proof}
+Assume $G_f(\rho)>0$; in particular, $f$ is nonconstant.
+Apply Theorem~\ref{as:gate} with
+$z=\frac72$, $t=\frac u2+1$, and $\gamma=\frac{e^u}{4}$.
+Write $\varepsilon=e^{-u}$, $a_0=1-3\varepsilon$, and
+\[
+ N=\frac{\pi^2}{4}k(t)\rho^2-\gamma C_*\Psi(\rho).
+\]
+The distance assumption gives $\alpha\le a_0$.
+We verify the hypotheses of Theorem~\ref{as:gate} and show that
+$N/u$ exceeds both the discarded-coordinate cost and all retained
+costs with $\beta\le a\le a_0$.
+
+We use
+$12/5<\pi^2/4<5/2$, $1<C_*<12/7$, and
+$\varepsilon\le e^{-8}<1/2500$.
+Since $e>2$, we have
+$\gamma>\tfrac12e^{2t-3}$, which implies
+\eqref{as:dual-parameters}.
+Also $\gamma>10t$ for $u\ge8$ and
+$1-\rho^2<4\varepsilon^2$, so the mean-transfer condition follows from
+\[
+ \frac{\eta_{\frac{\pi^2}{4}k(t),\gamma C_*}(\rho)}{\gamma}
+ >\frac12-4\varepsilon^2-\frac5{22}>0.
+\]
+Next,
+\[
+ k(t)\rho^2>t-(u+2)^2e^{-u}-4te^{-2u}
+ >t-\frac1{10}, \qquad
+ \gamma C_*\Psi(\rho)
+ \le\frac37(2u+1)e^{-u}<\frac1{300}.
+\]
+For the first one, use $k(t)>t-t^2/\gamma$.
+For the second, use
+$\Psi(\rho)\le H(\rho)\le(2u+1)e^{-2u}$.
+The error terms decrease for $u\ge8$, and evaluation at $u=8$
+gives the stated bounds. Consequently,
+\[
+ \frac Nu>\frac65+\frac2u.
+\]
+
+For the discarded-coordinate cost, direct substitution gives
+\[
+ k(t)-k(t-e^{2t-3}/2)
+ =\frac{\gamma^2 e^{2t-3}/2}
+        {(\gamma+t)(\gamma+t-e^{2t-3}/2)}
+ <\frac{e^u}{2(e-2)}.
+\]
+Together with \eqref{rt:scaled-profile}, this yields
+\[
+ \beta\le\frac{1001}{1000}\frac{2u+1}{8}e^{7-2u},
+ \qquad
+ \tau<\frac{1001}{1000}
+          \frac{(2u+1)e^{7-u}}{56(e-2)}.
+\]
+The resulting upper bound on $u\tau$ decreases for $u\ge8$.
+Evaluation at $u=8$, using $e>27/10$, therefore gives
+\[
+ N-u\left(\rho+\frac{\pi^2}{4}\tau\right)
+ >\frac u5+2-\frac52u\tau>\frac13.
+\]
+
+We now bound the retained-coordinate costs.
+The function $\arcsin^2 x/x$ increases on $(0,1)$, so for
+$0<v\le u$,
+\[
+ \rho[v-R(v)]\le\arcsin^2\rho=\frac{\pi^2}{4}
+   -2\arctan\varepsilon\,
+      \bigl(\pi-2\arctan\varepsilon\bigr)
+ <\frac{\pi^2}{4}-4\varepsilon.
+\]
+The last inequality follows from
+$\varepsilon/(1+\varepsilon^2)
+ \le\arctan\varepsilon\le\varepsilon$.
+
+For $a=F(u)/F(v)$, define the two upper bounds
+\[
+ \begin{split}
+ U_{\log}(v)
+ &=\frac1v\left\{
+   \frac{\pi^2}{4}-4\varepsilon
+   +\frac{\pi^2}{4}
+     \left[\frac{2\Delta_2(1-a/4)}{\log(4/a)}
+                  +(\Delta_1-\Delta_2)a\right]\right\},\\
+ U_{\rm quad}(v)
+ &=\frac1v\left\{
+   \frac{\pi^2}{4}-4\varepsilon
+   +\frac{\pi^2}{4}
+     \left[\frac{\Delta_2}{2}
+                  +\left(\Delta_1-\frac{\Delta_2}{2}\right)a\right]
+   \right\}.
+ \end{split}
+\]
+Both dominate $\mathcal Q_u(a)$ and are convex in $v$,
+by the argument of Lemma~\ref{as:convex-majorant}.
+We use $U_{\log}$ for $a\le1/8$ and $U_{\rm quad}$ for $a\ge1/8$.
+At $a=1/8$, the logarithmic bound is smaller than the quadratic
+bound, since $\log2>31/45$.
+It therefore suffices to check $U_{\log}$ at $v=7/2$ and
+$U_{\rm quad}$ at $v=\ell_u(1/8)$ and $v=\ell_u(a_0)$.
+
+The bound on $\beta$ gives $\beta<1/200$ and
+$\log(4/\beta)\ge(3u-5)/2$.
+For the latter inequality, it gives the lower bound
+$2u-7+\log(32000/[1001(2u+1)])$; its difference from
+$(3u-5)/2$ is positive at $u=8$ and increasing thereafter.
+We also have $\Delta_2<t-1$, since $k(2)>1$, and
+\[
+ \Delta_1-\Delta_2
+ \le k(2)-k(1)+(1-\rho^2)k(t)
+ <1+4t\varepsilon^2<2.
+\]
+Consequently,
+\[
+ U_{\log}(7/2)
+ <\frac57\left(1+\frac{2u}{3u-5}+\frac1{100}\right)
+ <\frac65+\frac2u.
+\]
+
+At $a=1/8$, Lemma~\ref{as:profile-convex} first gives
+$\ell_u(1/8)>u-\log8>4$.
+Its stronger derivative bound above $4$ then gives
+$\ell_u(1/8)>u-(4/7)\log8>u-6/5$.
+Thus
+\[
+ U_{\rm quad}(\ell_u(1/8))
+ <\frac52\frac{5/4+9u/32}{u-6/5}
+ <\frac65+\frac2u.
+\]
+In these last two comparisons, clearing positive denominators
+gives a quadratic that is positive at $u=8$ and increasing
+for $u\ge8$. Both endpoint costs are therefore below $N/u$.
+
+It remains to check $v=\ell_u(a_0)$.
+The profile derivative first gives $v>u+\log a_0>4$,
+and then
+\[
+ u-v<\frac47[-\log(1-3\varepsilon)]
+ \le\frac{12\varepsilon}{7(1-3\varepsilon)}
+ <\frac74\varepsilon.
+\]
+Put $d=1-a_0=3\varepsilon$.
+Substituting the definitions of $\Delta_1$ and $\Delta_2$
+into the quadratic upper bound gives the exact identity
+\[
+ N-uU_{\rm quad}(v)
+ =\frac{\pi^2}{4}k(t)\rho^2
+       \left[1-\frac uv\left(a_0+\frac{\rho^2d}{2}\right)\right]-\frac{\pi^2}{4}\frac uv
+       \left[1-k(1)\rho^2a_0-\frac{k(2)\rho^4d}{2}\right]-\gamma C_*\Psi(\rho)+4\varepsilon\frac uv.
+\]
+This identity retains the cancellation between the degree-one
+and degree-two corrections.
+
+Since $1-k(1)<1/\gamma$ and
+$k(1)-k(2)/2<1/\gamma$, we have
+\[
+ 1-k(1)\rho^2a_0-\frac{k(2)\rho^4d}{2}
+ \le(1+d)(\gamma^{-1}+4\varepsilon^2)
+ =4\varepsilon(1+4\varepsilon+3\varepsilon^2).
+\]
+Also $u-v<7\varepsilon/4$, $u\ge8$, and
+$\varepsilon<1/2500$ give
+\[
+ 1-\frac uv\left(a_0+\frac{\rho^2d}{2}\right)
+ \ge\frac54\varepsilon,\qquad
+ \frac{4u}{v}(1+4\varepsilon+3\varepsilon^2)<\frac{101}{25}.
+\]
+Applying these bounds to the identity above, together with the estimates
+$k(t)\rho^2>u/2+9/10$,
+$\gamma C_*\Psi(\rho)\le(3/7)(2u+1)\varepsilon$, and $u/v\ge1$,
+yields
+\[
+ \frac{N-uU_{\rm quad}(v)}{\varepsilon}>3\left(\frac u2+\frac9{10}\right)
+       -\frac{101}{10}-\frac37(2u+1)+4=\frac{9u}{14}-\frac{134}{35}>0.
+\]
+Thus all retained costs, as well as the discarded-coordinate
+cost, are below $N/u$.
+Theorem~\ref{as:gate} gives $G_f'(\rho)>0$.
+\end{proof}
+
+\subsection{Completion of the proof}\label{ub:high-cover}
+
+We first record the consequence of the compact-range calculation
+in Section~\ref{sec:compact-spectral}.
+
+\begin{proposition}\label{ub:compact-gate}
+For every increasing $f:\{-1,1\}^n\to\{-1,1\}$, if
+$49/50\le\rho\le\tanh8$ and $G_f(\rho)>0$, then
+$G_f'(\rho)>0$.
+\end{proposition}
+
+\begin{proof}
+Write $u=\atanh\rho$.
+Since
+$\log9<45951/20000<\atanh(49/50)$,
+Lemma~\ref{ub:exponential-local} rules out a positive gap when
+$\alpha\ge1-2e^{-u}$.
+For $\alpha<1-2e^{-u}$, the calculation in
+Section~\ref{sec:compact-spectral} verifies the hypotheses and
+strict criterion of Theorem~\ref{as:gate} throughout this range.
+Hence $D(T_\rho f)>\rho u$, which gives $G_f'(\rho)>0$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{jp:main}]
+Proposition~\ref{ub:lower-interval} and
+Theorems~\ref{ub:upper-middle} and~\ref{ub:last-middle}
+prove CK for $0\le\rho\le49/50$.
+
+Now fix an increasing function $f$.
+Constants and dictators satisfy CK directly, so assume that
+$f$ is nonconstant and $\delta(f)>0$.
+We show that every positive-gap point with $49/50\le\rho<1$
+satisfies $G_f'(\rho)>0$.
+Proposition~\ref{ub:compact-gate} proves this when
+$u=\atanh\rho\le8$.
+
+Suppose $u\ge8$.
+If $\delta(f)\le(3/2)e^{-u}$, then
+$\delta(f)<1/64$ and $u\le u_{\delta(f)}$.
+Lemma~\ref{rt:local-junction} therefore gives CK at this
+correlation, excluding a positive gap.
+For $\delta(f)>(3/2)e^{-u}$,
+Proposition~\ref{qual:tail-derivative} gives
+$G_f'(\rho)>0$ whenever $G_f(\rho)>0$.
+Thus the derivative condition holds throughout $49/50\le\rho<1$.
+
+Since $G_f(1)=-\Phi(\mu)\le0$,
+Lemma~\ref{ub:barrier} proves CK on $[49/50,1]$.
+This completes the proof for increasing functions.
+Finally, Lemma~\ref{lem:compression} replaces any Boolean function,
+at each fixed correlation, by an increasing function with the same
+mean and at least as much information.
+The bound for increasing functions therefore proves CK for every
+Boolean function.
+\end{proof}
+
+\section*{Acknowledgements}
+
+Vu Khac Ky thanks Professor Chandra Nair for introducing him to this problem and sharing valuable insights and ideas during his postdoctoral appointment under Professor Nair's supervision at the Chinese University of Hong Kong.
+
+
+
+
+
+
+\appendix
+
+\section{Auxiliary estimates and computational details}
+\label{sec:certificates}\label{app:certificate}
+
+\subsection{Auxiliary estimates}
+\label{app:auxiliary-estimates}
+
+\begin{proof}[Proof of Lemma~\ref{lem:and-rational}]
+The entropy series gives
+$\frac{H(\rho)}{1-\rho^2}
+ =\sum_{k\ge1}
+   \frac{1+\rho^2+\cdots+\rho^{2k-2}}{2k(2k-1)}$,
+so this ratio is increasing on $[0,1)$.
+We have
+$\frac{H(49/50)}{1-(49/50)^2}<17/12$.
+
+For the second bound, put $p=(1-\rho)/2\le1/80$.
+Concavity of $H_{\rm b}$ and $H_{\rm b}(0)=0$ give
+\[
+ H_{\rm b}(p^2)\ge pH_{\rm b}(p),\quad
+ H_{\rm b}(p-p^2)\ge(1-p)H_{\rm b}(p),\quad
+ H_{\rm b}(2p-p^2)\ge(1-p/2)H_{\rm b}(2p).
+\]
+To bound the last term, write
+$L(s)=-(1-s)\log(1-s)$.
+Since $L''(s)=-1/(1-s)$,
+\[
+ L(2p)-2L(p)
+ =\int_0^p\int_0^p L''(s+t)\,ds\,dt
+ \ge-\frac{p^2}{1-2p}.
+\]
+Consequently,
+$H_{\rm b}(2p)\ge
+2H_{\rm b}(p)-2p\log2-p^2/(1-2p)$.
+Substitution in \eqref{eq:and-entropy} yields
+\[
+ H(\rho)-J_{\rm AND}(\rho)
+ \le p\left[
+       \frac{H_{\rm b}(p)+\log2}{2}
+       +\frac{p}{4(1-2p)}
+      \right].
+\]
+Now $H_{\rm b}(p)\le H_{\rm b}(1/80)<7/100$ and
+$\log2<7/10$.
+The bracket is therefore less than
+$79/200\le(2/5)(1-p)$.
+Since $1-\rho^2=4p(1-p)$, this gives
+$H(\rho)-J_{\rm AND}(\rho)<(1-\rho^2)/10$.
+\end{proof}
+
+The next estimate proves positivity of the constant term in
+\eqref{ub:quadratic-budget} for the choice
+$c=57/(76-49\rho^2)$ used in
+Proposition~\ref{ub:lower-interval}.
+
+\begin{lemma}\label{app:central-energy}
+For $0\le\rho\le457/500$,
+\[
+ \frac{76-49\rho^2}{57}H(\rho)
+ <(1-\rho)\left(1+\rho-\frac{193027}{250000}\rho^2\right).
+\]
+\end{lemma}
+
+\begin{proof}
+Let $V(\rho)$ be the right side minus the left side.
+We show that $V$ decreases, then evaluate it at the right endpoint.
+For $0<\rho\le457/500$, the entropy series gives
+\[
+ \frac{V'(\rho)}{\rho}
+ =-2\left(1+\frac{193027}{250000}\right)+\frac43
+  +\frac{98}{57}\log2+\frac{579081}{250000}\rho
+  +\sum_{n\ge1}d_n\rho^{2n},
+\]
+where
+$d_n=\frac{4}{3(2n+1)}
+      -\frac{49(n+1)}{57n(2n-1)}$.
+Direct evaluation gives
+$d_1<-80/63$, $d_2<-17/105$, $d_3<-4/105$, and $d_4<0$.
+For $n\ge5$,
+\[
+ d_n<\frac{n-4}{4n^2}\le\frac1{64}.
+\]
+Also
+$\rho^{10}/[64(1-\rho^2)]<1/25$
+on the stated interval.
+Using $\log2<7/10$, we obtain
+$V'(\rho)/\rho<P(\rho)$, where
+\[
+ P(\rho)=-\frac{362581}{375000}
+          +\frac{579081}{250000}\rho
+          -\frac{80}{63}\rho^2-\frac{17}{105}\rho^4
+          -\frac4{105}\rho^6.
+\]
+Since $P''<-5/2$, Taylor's theorem gives
+\[
+ P(\rho)\le P(3/4)+P'(3/4)(\rho-3/4)
+                   -\frac54(\rho-3/4)^2
+ \le P(3/4)+\frac{P'(3/4)^2}{5}<0.
+\]
+The last inequality follows by direct evaluation.
+Thus $V$ decreases, and direct evaluation gives
+$V(457/500)>0$.
+\end{proof}
+
+The following rational-function bounds supply the curvature
+estimate needed in Lemma~\ref{ub:cubic-endpoints}.
+
+\begin{lemma}\label{app:cubic-curvature}
+Fix $3/4\le M\le83/100$.
+For $0\le x\le43/500$, define
+\[
+ C(x)=3-2M+(-3+5M)x+(1-4M)x^2+Mx^3, \qquad V(x)=\frac{1/2+3x-3x^2+x^3}{C(x)}.
+\]
+Then
+\[
+ \frac{67}{50}\le C(x)<\frac85,\qquad
+ -7+30x<V''(x)<0,\qquad V'(x)<2.
+\]
+\end{lemma}
+
+\begin{proof}
+All derivatives are with respect to $x$ unless indicated otherwise.
+We have
+\[
+ C'(x)\ge\frac34-\frac{116}{25}x>0,\qquad
+ \frac{\partial C}{\partial M}=-(1-x)^2(2-x)<0.
+\]
+Thus the minimum of $C$ occurs at $x=0$, $M=83/100$,
+and its maximum occurs at $x=43/500$, $M=3/4$.
+Evaluation at these points gives the stated bounds on $C$.
+
+Expanding the numerator of $-V''$ and bounding its coefficients
+over $3/4\le M\le83/100$ gives
+\[
+ -C(x)^3V''(x)\ge15-60x-54x^3-7x^5>8.
+\]
+Hence $V''<0$.
+Also
+\[
+ V'(0)=\frac{21/2-17M/2}{(3-2M)^2}<2,
+\]
+so $V'<2$ throughout the interval.
+
+For the lower bound on $V''$, expand around $M=83/100$:
+\[
+ C(x)^3\bigl(V''(x)+7-30x\bigr)
+ =\sum_{j=0}^3P_j(x)(83/100-M)^j.
+\]
+Expansion and the bound $x<1/10$ give
+\[
+ \begin{array}{c|l}
+ j&\text{lower bound for }P_j(x)\\ \hline
+ 0&\frac54+\left(\frac{53}{2}-304x\right)x-588x^5\\
+ 1&57-316x-250x^2\\
+ 2&165-1123x-2001x^3\\
+ 3&56-660x+3186x^2-8742x^3
+ \end{array}
+\]
+Each lower bound is positive on $[0,43/500]$.
+For the first, use $53/2>304(43/500)$ and $x<1/10$.
+The middle two remain positive at $x=1/10$.
+For the last, use
+\[
+ 56-660x+3186x^2-8742x^3
+ \ge56-\frac{660^2}{4\cdot3186}-\frac{8742}{1000}>0.
+\]
+Since $83/100-M\ge0$, this proves
+$C(x)^3(V''(x)+7-30x)>0$ and hence the lower bound.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{ub:cubic-endpoints}]
+Fix $M$ in the stated range and put $x=1-\rho$.
+Then $0<x\le43/500$, and $C_\rho=C(x)$ for the function
+in Lemma~\ref{app:cubic-curvature}.
+
+We first prove that
+$\rho\mapsto\kappa_\rho(3/2-\rho^3)$ is strictly convex.
+Write
+\[
+ L(x):=\frac{H(1-x)}x
+ =\frac12\log\frac{2e}{x}-r(x),
+\]
+where $r(x)=\sum_{k\ge1}\frac{x^k}{2^{k+1}k(k+1)}$.
+With $V$ from Lemma~\ref{app:cubic-curvature},
+\[
+ \kappa_\rho(3/2-\rho^3)=L(x)V(x).
+\]
+That lemma gives
+$-7+30x<V''(x)<0$ and $V'(x)<2$.
+Moreover,
+$V(0)=1/[2(3-2M)]\ge1/3$ and $0<V(x)<3/5$,
+the latter following from $C(x)\ge67/50$ and
+$1/2+3x-3x^2+x^3\le1/2+3x$.
+The series gives
+\[
+ 0<r'(x)\le\frac18+\frac{x}{24(1-x/2)}<\frac{13}{100},\qquad
+ 0<r''(x)\le\frac1{24(1-x/2)^2}<\frac1{20}.
+\]
+Concavity of $V$ implies
+\[
+ V(x)-2xV'(x)\ge V(0)-xV'(x)\ge\frac13-2x.
+\]
+The second derivatives in $x$ and $\rho$ agree.
+Differentiating $L(x)V(x)$ twice and discarding the positive
+term $-r(x)V''(x)$ therefore gives
+\[
+ \begin{split}
+ 2x^2\frac{d^2}{d\rho^2}
+       [\kappa_\rho(3/2-\rho^3)]
+ >\frac13-2x
+  -x^2\left[(7-30x)\log\frac{2e}{x}+\frac{11}{10}\right]
+ >0.
+ \end{split}
+\]
+To check the last inequality, its right side decreases on
+$(0,43/500]$. Indeed,
+\[
+ \frac{d}{dx}\left[x^2(7-30x)\log\frac{2e}{x}\right]
+ =x\left[(14-90x)\log\frac{2e}{x}-7+30x\right]>0,
+\]
+using $\log(2e/x)\ge\log(1000e/43)>4$.
+Evaluation at $x=43/500$ gives a positive value.
+
+Next, $C_\rho$ is positive, decreasing, and concave as a function
+of $\rho$, so $1/C_\rho$ is positive, increasing, and convex.
+The function $H(\rho)/(1-\rho)$ is also positive, increasing,
+and strictly convex: its first derivative is
+$\log(2/(1+\rho))/(1-\rho)^2$, and its second derivative is at least
+$\rho/[(1-\rho)^2(1+\rho)]>0$.
+Their product $\kappa_\rho$ is therefore strictly convex.
+For $t\ge1/2$, the identity
+\[
+ \kappa_\rho(1+t-\rho^3)
+ =\kappa_\rho(3/2-\rho^3)+(t-1/2)\kappa_\rho
+\]
+now proves strict convexity in $\rho$.
+
+For $t<1$, put
+\[
+ \chi_\rho(t)
+ =-\frac{2H(t)}{1-t}+2\kappa_\rho(1+t-\rho^3).
+\]
+The endpoint hypotheses and convexity in $\rho$ give
+$\chi_\rho(t)\le0$ for
+$\rho\in[\rho_-,\rho_+]$ and $1/2\le t<1$.
+
+For $0\le t\le1/2$, Lemma~\ref{ub:tangent} gives concavity in $t$,
+and hence
+\[
+ \chi_\rho'(t)\ge\chi_\rho'(1/2)
+ =8\log(3/4)+2\kappa_\rho>0.
+\]
+For the last inequality, the bounds
+$C_\rho<8/5$, $r(x)<1/16$, and $\log(2e/x)>4$ give
+$\kappa_\rho>155/128$, while $\log(4/3)<3/10$.
+Thus $\chi_\rho(t)\le\chi_\rho(1/2)\le0$ on this remaining range.
+Multiplying by $(1-t)/2$ proves the entropy inequality for $t<1$;
+continuity gives $t=1$.
+
+Finally, $H(9/10)<1/5$ by direct evaluation.
+Since $\rho\ge457/500>9/10$, we have $H(\rho)<1/5$.
+Together with $C_\rho\ge67/50$, this gives
+\[
+ \kappa_\rho(1-\rho^3)
+ =\frac{H(\rho)(1+\rho+\rho^2)}{C_\rho}
+ <\frac{30}{67}<\frac12. \qedhere
+\]
+\end{proof}
+
+The final estimate supplies the derivative bounds used in
+Lemma~\ref{as:explicit-inverse}.
+
+\begin{lemma}\label{app:scaled-profile-derivative}
+For the scaled profile $S$ in \eqref{eq:scaled-profile} and $v\ge2$,
+\[
+ 1<(2v+1)\frac{S'(v)}{S(v)}<2.
+\]
+\end{lemma}
+
+\begin{proof}
+Put $q=e^{-2v}$.
+The entropy formula gives
+$S(v)=2v+1+\sum_{n\ge1}(2v+1+c_n)q^n$,
+where $c_n=\sum_{k=1}^n\frac{(-1)^{k+1}}{k(k+1)}\in(0,1/2]$.
+Termwise differentiation yields
+\[
+ 2-\frac{(4v+3)q}{(1-q)^2}\le S'(v)<2.
+\]
+The subtracted term decreases for $v\ge2$ and is less than $1/4$
+at $v=2$, so $S'(v)>7/4$.
+The series and \eqref{rt:scaled-profile} also give
+\[
+ 1<\frac{S(v)}{2v+1}
+ \le\frac{1+q}{1-q}
+ \le\frac{1+e^{-4}}{1-e^{-4}}<\frac74.
+\]
+Combining these bounds proves both inequalities.
+\end{proof}
+
+\subsection{Computational details}
+
+The computations below verify profile-clock bounds and spectral
+inequalities over complete parameter intervals. They use Arb interval arithmetic
+\cite{Johansson2017}, accepting an inequality only when its
+enclosure has the required sign throughout the interval.
+The programs also check coverage of the coefficient cells and correlation
+ranges, and positivity of the denominators in the supporting-line
+integrals.
+
+The middle-range computation verifies 29 profile-clock comparisons,
+using 56 integration intervals and 152 supporting-line evaluations.
+It also checks the scalar endpoint inequalities and coverage of
+the parameter regions in Section~\ref{sec:cover}.
+The low-correlation bound, the two-coordinate moment estimate,
+and the argument for $u\ge8$ are proved directly in the paper.
+
+For the compact range, the file
+\path{qualitative_compact_certificate.json}
+partitions $[45951/20000,8]$ into 24 closed intervals in
+$u=\atanh\rho$: eight equal intervals up to $4$, followed by
+16 intervals of length $1/4$.
+The cutoff is $a_*(u)=1-2e^{-u}$ throughout.
+On each interval, the parameter choice in
+Section~\ref{sec:compact-spectral} requires four height endpoint
+bounds from Lemma~\ref{as:convex-majorant}.
+These give 96 interval inequalities in total.
+The discarded-coordinate inequality is checked on the same
+intervals, and Lemma~\ref{ub:exponential-local} covers
+$\alpha\ge a_*(u)$.
+
+The program \path{qualitative_compact_verify.py} uses interval
+evaluation and fourth-order Taylor bounds to verify these
+inequalities throughout each noise interval.
+The separate program \path{qualitative_compact_audit.py} checks
+independently derived formulas for the original spectral costs
+over the full height range $z(u)\le v\le v_+(u)$.
+
+The data and programs are available at
+\url{https://github.com/vukhacky/courtade-kumar-conjecture/}.
+The accompanying bundle contains a \path{README.md} with
+installation and build instructions.
+After installing the dependencies in \path{requirements.txt},
+run \texttt{python3 verify.py} from the bundle root to reproduce
+the middle-range and compact high-correlation computations.
+
+\section*{AI methodology}
+
+The authors formulated the approach and used ChatGPT to assist
+with proof development, preparation of the verification code,
+and exposition. The authors take full responsibility for the
+accuracy, originality, and integrity of the paper and its
+accompanying code.
+
+\begin{thebibliography}{CGJ+26}
+\setlength{\itemsep}{0.2em}
+\interlinepenalty=10000
+
+
+\bibitem[AGKN13]{AnantharamGohariKamathNair2013}
+V.~Anantharam, A.~A. Gohari, S.~Kamath, and C.~Nair.
+\newblock On hypercontractivity and the mutual information between {Boolean} functions.
+\newblock In \emph{Proc. 51st Annu. Allerton Conf. Commun., Control, Comput.}, pages 13--19, 2013.
+
+\bibitem[ABCJN17]{AnantharamEtAl2017}
+V.~Anantharam, A.~Bogdanov, A.~Chakrabarti, T.~S. Jayram, and C.~Nair.
+\newblock A conjecture regarding optimality of the dictator function under {Hellinger} distance.
+\newblock \emph{Inf. Theory Appl. Workshop}, 2017.
+
+\bibitem[BO20]{BarnesOzgur2020}
+L.~P. Barnes and A.~\"Ozg\"ur.
+\newblock The {Courtade--Kumar} most informative {Boolean} function conjecture
+and a symmetrized {Li--M'edard} conjecture are equivalent, 2020.
+
+\bibitem[BLM13]{BoucheronLugosiMassart2013}
+S.~Boucheron, G.~Lugosi, and P.~Massart.
+\newblock \emph{Concentration Inequalities:
+A Nonasymptotic Theory of Independence}.
+\newblock Oxford University Press, 2013.
+
+\bibitem[CN24]{ChenNair2024}
+Z.~Chen and C.~Nair.
+\newblock On the optimality of dictator functions and isoperimetric inequalities on {Boolean} hypercubes.
+\newblock In \emph{Proc. IEEE Int. Symp. Inf. Theory (ISIT)}, pages 3380--3385, 2024.
+
+\bibitem[CGJ+26]{CGJLMNW2026}
+Z. Chen, A. Gohari, A. Javanmard, H. Lin, V. Mirrokni, C. Nair, and D. P. Woodruff.
+\newblock A Proof of the Most Informative Boolean Function Conjecture. 
+\newblock \href{https://arxiv.org/abs/2609.24931}{arXiv:2609.24931}, 2026.
+
+\bibitem[CGN25]{ChenGohariNair2025}
+Z.~Chen, A.~Gohari, and C.~Nair.
+\newblock A differential equation approach to the most-informative {Boolean}
+function conjecture.
+\newblock In \emph{Proc. IEEE Int. Symp. Inf. Theory (ISIT)}, 2025.
+\newblock Extended version,
+\href{https://arxiv.org/abs/2502.10019v2}{arXiv:2502.10019v2}.
+
+
+\bibitem[CE23]{CorderoEskenazis2023} D.~Cordero-Erausquin and A.~Eskenazis.
+\newblock Talagrand's influence inequality revisited.
+\newblock \emph{Anal. PDE}, 16:571--612, 2023.
+
+\bibitem[CK14]{CourtadeKumar2014}
+T.~A. Courtade and G.~R. Kumar.
+\newblock Which {Boolean} functions maximize mutual information on noisy
+inputs?
+\newblock \emph{IEEE Trans. Inf. Theory}, 60\penalty0
+(8):\penalty0 4515--4525, 2014.
+
+\bibitem[FS07]{FalikSamorodnitsky2007}
+D.~Falik and A.~Samorodnitsky.
+\newblock Edge-isoperimetric inequalities and influences.
+\newblock \emph{Combin. Probab. Comput.}, 16\penalty0
+(5):\penalty0 693--712, 2007.
+
+
+\bibitem[GS11]{GarbanSteif2011}
+C.~Garban and J.~E. Steif.
+\newblock Lectures on noise sensitivity and percolation, 2011.
+\newblock arXiv:1102.5761.
+
+\bibitem[Gro75]{Gross1975}
+L.~Gross.
+\newblock Logarithmic {Sobolev} inequalities.
+\newblock \emph{Amer. J. Math.}, 97\penalty0 (4):\penalty0
+1061--1083, 1975.
+
+\bibitem[HL26]{HanLi2026}
+G.~Han and P.~Li.
+\newblock High-order Talagrand and Eldan--Gross inequalities via
+Besov-type variance functionals.
+\newblock \href{https://arxiv.org/abs/2606.14876v1}{arXiv:2606.14876v1}, 2026.
+
+\bibitem[Har60]{Harris1960}
+T.~E. Harris.
+\newblock A lower bound for the critical probability in a certain percolation
+process.
+\newblock \emph{Proc. Cambridge Philos. Soc.},
+56\penalty0 (1):\penalty0 13--20, 1960.
+
+\bibitem[JW26]{JavanmardWoodruff2026}
+A.~Javanmard and D.~P. Woodruff.
+\newblock Progress on the {Courtade--Kumar} conjecture: Optimal high-noise
+entropy bounds and generalized coordinate-wise mutual information, 2026.
+\newblock arXiv:2601.09679.
+
+\bibitem[Joh17]{Johansson2017}
+F.~Johansson.
+\newblock {Arb}: Efficient arbitrary-precision midpoint-radius interval
+arithmetic.
+\newblock \emph{IEEE Trans. Comput.}, 66\penalty0 (8):\penalty0
+1281--1292, 2017.
+
+\bibitem[KOW16]{KindlerODonnellWitmer2015}
+G.~Kindler, R.~O'Donnell, and D.~Witmer.
+\newblock Remarks on the most informative function conjecture at fixed mean,
+2016.
+\newblock arXiv:1506.03167.
+\newblock First posted 2015.
+
+\bibitem[KST99]{KonigSchuttTomczak1999}
+H.~K\"onig, C.~Sch\"utt, and N.~Tomczak-Jaegermann.
+\newblock Projection constants of symmetric spaces and variants of
+{Khintchine's} inequality.
+\newblock \emph{J. Reine Angew. Math.},
+511:\penalty0 1--42, 1999.
+
+\bibitem[KS26]{KramerSaglam2026}
+D.~Kramer and M.~Saglam.
+\newblock On the most informative {Boolean} function under noise.
+\newblock Preprint, 2026.
+\newblock \url{https://mnsaglam.com/papers/courtade-kumar.pdf}.
+
+\bibitem[KC13]{KumarCourtade2013}
+G.~R. Kumar and T.~A. Courtade.
+\newblock Which {Boolean} functions are most informative?
+\newblock In \emph{Proc. IEEE Int. Symp. Inf. Theory (ISIT)}, 2013.
+
+\bibitem[LM21]{LiMedard2021}
+J.~Li and M.~M\'edard.
+\newblock {Boolean} functions: Noise stability, non-interactive correlation distillation, and mutual information.
+\newblock \emph{IEEE Trans. Inf. Theory}, 67(2):778--789, 2021.
+
+\bibitem[MB26]{MahdavifarBeirami2026}
+H.~Mahdavifar and A.~Beirami.
+\newblock The most informative bit and beyond:
+A proof of the {Courtade--Kumar} conjecture and multibit extensions.
+\newblock \href{https://arxiv.org/abs/2609.26444}
+{arXiv:2609.26444}, 2026.
+
+\bibitem[OD14]{ODonnell2014}
+R.~O'Donnell.
+\newblock \emph{Analysis of {Boolean} Functions}.
+\newblock Cambridge Univ. Press, 2014.
+
+\bibitem[OAI26a]{OpenAI2026Information}
+OpenAI.
+\newblock Sharp binary-information contraction on the discrete cube.
+\newblock Preprint, 2026.
+\newblock \href{https://github.com/openai/math/blob/main/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/main.pdf}
+{OpenAI mathematics collection}.
+
+\bibitem[OAI26b]{OpenAI2026Hellinger}
+OpenAI.
+\newblock Hellinger contraction with arbitrary {Boolean} output bias.
+\newblock Preprint, 2026.
+\newblock \href{https://github.com/openai/math/blob/main/preprints/Hellinger-contraction-with-arbitrary-Boolean-output-bias-September-24-2026/main.pdf}
+{OpenAI mathematics collection}.
+
+\bibitem[OSW16]{Ordentlich2016}
+O.~Ordentlich, O.~Shayevitz, and O.~Weinstein.
+\newblock An improved upper bound for the most informative {Boolean} function
+conjecture.
+\newblock In \emph{Proc. IEEE Int. Symp. Inf. Theory (ISIT)}, pages 500--504, 2016.
+
+\bibitem[PPM18]{PichlerPiantanidaMatz2018}
+G.~Pichler, P.~Piantanida, and G.~Matz.
+\newblock Dictator functions maximize mutual information.
+\newblock \emph{Ann. Appl. Probab.}, 28(5):3094--3101, 2018.
+
+\bibitem[Sam16]{Samorodnitsky2016}
+A.~Samorodnitsky.
+\newblock On the entropy of a noisy function.
+\newblock \emph{IEEE Trans. Inf. Theory}, 62\penalty0
+(10):\penalty0 5446--5464, 2016.
+
+\bibitem[Tal94]{Talagrand1994}
+M.~Talagrand.
+\newblock On {Russo}'s approximate zero-one law.
+\newblock \emph{Ann. Probab.}, 22(3):1576--1587, 1994.
+
+\bibitem[Yu23]{Yu2023}
+L.~Yu.
+\newblock On the {$\Phi$}-stability and related conjectures.
+\newblock \emph{Probab. Theory Relat. Fields}, 186\penalty0
+(3--4):\penalty0 1045--1080, 2023.
+
+\bibitem[Yu26]{Yu2026Local}
+L.~Yu.
+\newblock Local optimality of dictator functions with applications to
+{Courtade--Kumar} and {Li--M\'edard} conjectures, 2026.
+\newblock \href{https://arxiv.org/abs/2410.10147v5}{arXiv:2410.10147v5}, revised 2026.
+
+\bibitem[YT22]{YuTan2022}
+L.~Yu and V.~Y.~F. Tan.
+\newblock Common information, noise stability, and their extensions.
+\newblock \emph{Found. Trends Commun. Inf. Theory},
+19(3):264--546, 2022.
+
+\bibitem[KT26a]{KyTran2026Full}
+V.~K.~Ky and T.~Tran.
+\newblock Dictators are most informative.
+\newblock \href{https://arxiv.org/abs/2609.24184v1}{arXiv:2609.24184v1}, 2026.
+
+\bibitem[KT26b]{VuTranStability}
+V.~K.~Ky and T.~Tran.
+\newblock Stability of the Courtade--Kumar inequality.
+\newblock \href{https://arxiv.org/abs/2609.31797}{arXiv:2609.31797}, 2026.
+
+\end{thebibliography}
+
+\end{document}

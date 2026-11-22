@@ -1,0 +1,76 @@
+{
+  "status": "PASS_ALL_NUMERICAL_STAGES",
+  "manifest_sha256": "c19818fcc06f6198c32401b48b9c8a414d761d6afbcd235bb2a3aa502ebf79ad",
+  "middle_range": {
+    "one_coordinate_clocks": 24,
+    "two_coordinate_clocks": 5,
+    "integration_panels": 56,
+    "support_evaluations": 152
+  },
+  "compact_range": {
+    "noise_intervals": 24,
+    "height_endpoint_inequalities": 96
+  },
+  "stages": [
+    {
+      "script": "low_correlation_verify.py",
+      "report": "low_correlation_results.json",
+      "status": "PASS_EXACT_LOW_CORRELATION",
+      "report_sha256_without_timings": "419bdbf9e3ec358835acfca85e923c1572fb2dda0c47e619e4b70011b80b5d89"
+    },
+    {
+      "script": "low_correlation_audit.py",
+      "report": "low_correlation_audit.json",
+      "status": "PASS_INDEPENDENT_LOW_CORRELATION",
+      "report_sha256_without_timings": "7f1f2723dfdc758858800303eed148da76b06be676638bac5a9cd889597a3246"
+    },
+    {
+      "script": "two_core_moment_verify.py",
+      "report": "two_core_moment_results.json",
+      "status": "PASS_EXACT_TWO_CORE_MOMENTS",
+      "report_sha256_without_timings": "4efbd89265da42f5fd753abfb5a8ee7694789ba255168423781b5ae2caa5a8d2"
+    },
+    {
+      "script": "current_middle_audit.py",
+      "report": "current_middle_upper_results.json",
+      "status": "PASS",
+      "report_sha256_without_timings": "e9b4dc8a555b9fa943c0fc68734b5b29ecc6abd9952b99dfce9b621583a9c050"
+    },
+    {
+      "script": "current_middle_audit.py",
+      "report": "current_middle_last_results.json",
+      "status": "PASS",
+      "report_sha256_without_timings": "d55db48b907fec9963e915009b917ef05a17cfd0486c471e2439075428b6460a"
+    },
+    {
+      "script": "convex_source_independent_audit.py",
+      "report": "convex_source_independent_audit.json",
+      "status": "PASS_INDEPENDENT_CONVEX_SOURCE_AUDIT",
+      "report_sha256_without_timings": "a600952fcca4a33f8a1bf436aebd0bf3febf3b718a8225a8ba3c34cb4a5a54c9"
+    },
+    {
+      "script": "tangent_clock_independent_audit.py",
+      "report": "tangent_clock_independent_audit.json",
+      "status": "PASS_INDEPENDENT_SUPPORTING_LINE_AUDIT",
+      "report_sha256_without_timings": "487bb63ed450748d96597a47c5339bc1e5154a3b2daaefde5d640c99512a5703"
+    },
+    {
+      "script": "qualitative_compact_verify.py",
+      "report": "qualitative-compact-replay.json",
+      "status": "PASS_FRESH_UNIFORM_COMPACT_GATE",
+      "report_sha256_without_timings": "53768d656955da0226bc9d0016f0d311ccc0e05690e6cd36d687cad24277edaa"
+    },
+    {
+      "script": "qualitative_compact_audit.py",
+      "report": "qualitative-compact-independent-audit.json",
+      "status": "PASS_UNSCALED_FIRST_ORDER_REPLAY",
+      "report_sha256_without_timings": "990f6634c660632523e2577ee570afd1b733898ce5835f4d5ca3fdc2df68bffe"
+    },
+    {
+      "script": "check_qualitative_tail.py",
+      "report": "qualitative-tail-constants.json",
+      "status": "PASS_QUALITATIVE_TAIL_CONSTANTS",
+      "report_sha256_without_timings": "663ff3fb848f416a03a0e652ad33b57e026ba0387f5e5ade230bd667b2492e46"
+    }
+  ]
+}

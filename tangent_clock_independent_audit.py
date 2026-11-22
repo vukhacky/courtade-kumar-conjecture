@@ -2,7 +2,7 @@
 
 This audit reads the recorded rational support points. It uses intercepts
 and endpoint logarithms instead of the primary verifier's midpoint/atanh
-formula. The current middle audit separately reconstructs source envelopes.
+formula. The middle-range verifier also reconstructs source envelopes.
 """
 import argparse,hashlib,json,sys,time
 from pathlib import Path

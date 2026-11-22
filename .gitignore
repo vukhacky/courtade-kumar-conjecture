@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.py[cod]
+CK-exact.zip
+CK-paper.aux
+CK-paper.log
+CK-paper.out
+CK-paper.synctex.gz

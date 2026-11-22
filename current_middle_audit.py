@@ -1,10 +1,8 @@
-"""Current middle audit: source/local tests, endpoint scalar gates, tangent clocks.
+"""Check the middle-range scalar gates, coefficient regions and profile clocks.
 
-Verifies the current scalar and source-domain obligations from the supplied inputs. The paper's scalar-convexity lemma reduces each cubic entropy gate
-to its correlation endpoints; the prior credit is analytic, and the local
-sign propagates downward from the right endpoint. All source and tree coverage checks are retained. The uniform fourth-moment bound covers the local region analytically.
-Only its rational endpoint constants are checked.
-Clocks use explicit positive affine supporting lines without root tests.
+The scalar convexity lemma reduces each cubic entropy gate to the band
+endpoints. The moment bound covers the local region analytically. Each clock
+is bounded by integrating the reciprocals of positive affine supports.
 """
 import argparse,json,hashlib,time,sys
 if sys.flags.optimize:
@@ -32,10 +30,9 @@ def scalar_endpoints(data):
  r0,r1=map(F,data['rho']);M=F(data['M']);ast=F(data['A_star'])
  assert F(457,500)<=r0<r1<1 and F(3,4)<=M<=F(83,100)
  assert 0<ast<1
- sc=data.get('scalars',data.get('scalar_signs'))
- assert sc['panels']>0 and len(sc['tangents'])==sc['panels']
+ left_tangent,right_tangent=data['endpoint_tangents']
  gate=None
- for rho,tq in [(r0,sc['tangents'][0]),(r1,sc['tangents'][-1])]:
+ for rho,tq in [(r0,left_tangent),(r1,right_tangent)]:
   r=A(rho);t=A(F(tq));assert 0<t<1;p=(1-t)/2
   C=1+r+r*r-r*r*(1+r)*A(M);assert C>0
   coeff=h(r)/((1-r)*C)

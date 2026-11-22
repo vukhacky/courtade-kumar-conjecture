@@ -102,7 +102,7 @@ def replay(path,limit=None):
                 if val>0:scalar_count+=1;continue
                 assert hi-lo>Q(1,2**24),(index,which,lo,hi)
                 mid=(lo+hi)/2;stack.extend([(lo,mid),(mid,hi)])
-        # Audit the whole retained height interval directly, without the
+        # Audit the whole height interval directly, without the
         # tangent majorants or their convexity lemma.
         for sl,sh in [(Q(0),Q(1))]:
             stack=[(ul,uh,Q(sl),Q(sh))]

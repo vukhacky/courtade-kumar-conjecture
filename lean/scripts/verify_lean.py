@@ -183,7 +183,7 @@ def main():
     parser.add_argument("--fetch-cache", action="store_true", help="prepare the exact pinned dependencies")
     parser.add_argument("--plan", action="store_true", help="resolve imports without compiling")
     parser.add_argument("--jobs", type=int, default=1, help="maximum simultaneous Lean processes (default: 1)")
-    parser.add_argument("--memory-mb", type=int, default=4096, help="Lean memory setting per process")
+    parser.add_argument("--memory-mb", type=int, default=8192, help="Lean memory limit in MiB per process (default: 8192)")
     parser.add_argument("--target", action="append", metavar="CK.MODULE", help="build a subset, without the full audit")
     args = parser.parse_args()
     if args.jobs <= 0 or args.memory_mb <= 0:

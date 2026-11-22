@@ -26,7 +26,7 @@ python3 scripts/verify_lean.py --fetch-cache
 
 The checker uses the [pinned Lean toolchain](lean-toolchain) and [dependency revisions](lake-manifest.json), compiles every local module into a new directory, and checks their transitive axiom dependencies. The only allowed axioms are `propext`, `Classical.choice`, and `Quot.sound`. The proof includes every certificate as Lean source. The kernel checks the exact rational computations.
 
-The build defaults to one Lean process because some modules need several gigabytes of memory. Allow about an hour for a sequential build on a machine with sufficient memory. Use `--jobs 2` to run two Lean processes. When the pinned dependency cache is already installed, omit `--fetch-cache`. For editor use, open `lean/` as the project and run `lake build` to build the library for `import CK`.
+The build defaults to one Lean process with an 8 GiB compiler memory limit because the largest certificates need several gigabytes of memory. Allow about an hour for a sequential build on a machine with sufficient memory. Use `--jobs 2` to run two Lean processes. When the pinned dependency cache is already installed, omit `--fetch-cache`. For editor use, open `lean/` as the project and run `lake build` to build the library for `import CK`.
 
 ## Proof structure
 
